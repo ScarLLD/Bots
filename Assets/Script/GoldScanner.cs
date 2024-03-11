@@ -1,15 +1,20 @@
+using System;
 using UnityEngine;
 
 public class GoldScanner : MonoBehaviour
 {
     [SerializeField] private GoldPool _goldPool;
 
+    public int GoldCount;
+
+    public event Action Scanned;
+
     public void Scan()
     {
-        int goldCount = _goldPool.GetGoldCount;
+        GoldCount = _goldPool.GetGoldCount;
 
-        if (goldCount > 0)
-            Debug.Log($"Найдено золото: {goldCount}.");
+        if (GoldCount > 0)
+            Debug.Log($"Найдено золото: {GoldCount}.");
         else
             Debug.Log($"Золота нет.");
     }
