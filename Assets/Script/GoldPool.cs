@@ -9,14 +9,12 @@ public class GoldPool : MonoBehaviour
 
     private List<Gold> _pool;
 
+    public int GetGoldCount => _pool.Count;
+
     public void Reset()
     {
-        var timePool = _pool.Where(enemy => enemy.gameObject.activeInHierarchy == true).ToList();
-
-        for (int i = 0; i < timePool.Count; i++)
-        {
-            timePool[i].gameObject.SetActive(false);
-        }
+        var timePool = _pool.Where(gold => gold.gameObject.activeInHierarchy == true).
+            Select(gold => { gold.gameObject.SetActive(false); return gold; });
     }
 
     private void Awake()
@@ -43,11 +41,20 @@ public class GoldPool : MonoBehaviour
         }
     }
 
-    public int GetGoldCount => _pool.Count;
-
-    private bool TryGetGold(out Gold gold)
+    public void SetContainerParent(Gold gold)
     {
-        gold = _pool.FirstOrDefault(gold => gold.gameObject.activeInHierarchy == false);
+        gold.transform.parent = _container;
+    }
+
+    public bool TryGetGold(out Gold gold)
+    {
+        gold = _pool.FirstOrDefault(gold => gold.gameObject.activeInHierarchy == true);
+        return gold != null;
+    }
+
+    public bool TryGetAvailableGold(out Gold gold)
+    {
+        gold = _pool.Where(gold => gold.gameObject.activeInHierarchy == true).FirstOrDefault(gold => gold.IsTake == false);
         return gold != null;
     }
 }

@@ -9,12 +9,10 @@ public class ResourcesSpawner : MonoBehaviour
     [SerializeField] private Gold _goldPrefab;
 
     private Transform[] _spawnPoints;
-    private List<Gold> _golds;
 
     private void Awake()
     {
         _spawnPoints = new Transform[_spawnPointsParent.childCount];
-        _golds = new List<Gold>();
 
         for (int i = 0; i < _spawnPointsParent.childCount; i++)
             _spawnPoints[i] = _spawnPointsParent.GetChild(i);

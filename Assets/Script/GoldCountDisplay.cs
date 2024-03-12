@@ -9,21 +9,16 @@ public class GoldCountDisplay : MonoBehaviour
     private void OnEnable()
     {
         _scanner.Scanned += ShowGoldCount;
-    }
-
-    private void ShowGoldCount()
-    {
-        _text.text = _scanner.GoldCount.ToString();
-    }
-
-    private void Start()
-    {
-        ShowGoldCount();
-    }
+    }    
 
     private void OnDisable()
     {
         _scanner.Scanned -= ShowGoldCount;
 
+    }
+
+    private void ShowGoldCount()
+    {
+        _text.text = _scanner.GetGoldCount.ToString();
     }
 }
