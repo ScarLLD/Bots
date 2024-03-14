@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,10 +7,12 @@ public class GoldPool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
     [SerializeField] private Gold _goldPrefab;
+    [SerializeField] private ParticleGoldPool _particleGoldPool;
+
+    public event Action PoolEmpty;
+    public event Action Collected;
 
     private List<Gold> _pool;
-
-    public int GetGoldCount => _pool.Count;
 
     public void Reset()
     {
@@ -26,6 +29,7 @@ public class GoldPool : MonoBehaviour
     {
         if (TryGetGold(out Gold gold))
         {
+            gold.transform.parent = _container;
             gold.transform.position = spawnPoint;
             gold.gameObject.SetActive(true);
 
@@ -41,14 +45,9 @@ public class GoldPool : MonoBehaviour
         }
     }
 
-    public void SetContainerParent(Gold gold)
-    {
-        gold.transform.parent = _container;
-    }
-
     public bool TryGetGold(out Gold gold)
     {
-        gold = _pool.FirstOrDefault(gold => gold.gameObject.activeInHierarchy == true);
+        gold = _pool.FirstOrDefault(gold => gold.gameObject.activeInHierarchy == false);
         return gold != null;
     }
 
@@ -57,4 +56,29 @@ public class GoldPool : MonoBehaviour
         gold = _pool.Where(gold => gold.gameObject.activeInHierarchy == true).FirstOrDefault(gold => gold.IsTake == false);
         return gold != null;
     }
+
+    public bool TryGetPoint(Vector3 tempPosition)
+    {
+        var isPoint = _pool.Where(gold => gold.gameObject.activeInHierarchy == false).
+            Any(gold => gold.transform.position == tempPosition);
+
+        return isPoint;
+    }
+
+    public int GetGoldCount()
+    {
+        return _pool.Where(gold => gold.gameObject.activeInHierarchy == true).Count();
+    }
+
+    public void CollectGold(Gold gold)
+    {
+        gold.gameObject.SetActive(false);
+        gold.ChangeStatus();
+        gold.transform.parent = _container.transform;
+        _particleGoldPool.GetParticle(gold.transform.position);
+        Collected?.Invoke();
+
+        if (GetGoldCount() == 0)
+            PoolEmpty?.Invoke();
+    }    
 }

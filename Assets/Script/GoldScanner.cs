@@ -18,13 +18,8 @@ public class GoldScanner : MonoBehaviour
 
     public void Scan()
     {
-        GoldCount = _goldPool.GetGoldCount;
+        GoldCount = _goldPool.GetGoldCount();
 
-        Scanned?.Invoke();
-
-        if (GoldCount > 0)
-            Debug.Log($"Найдено золото: {GoldCount}.");
-        else
-            Debug.Log($"Золота нет.");
+        Scanned?.Invoke();        
     }
 }

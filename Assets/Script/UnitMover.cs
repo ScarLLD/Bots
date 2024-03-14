@@ -4,68 +4,65 @@ using UnityEngine;
 public class UnitMover : MonoBehaviour
 {
     private UnitsTracker _unitsTracker;
+    private UnitTaker _unitTaker;
     private float _speed;
     private Vector3 _startPosition;
     private Coroutine _moveCoroutine;
     private bool _isWalking;
-    private bool _isGrubing;
 
     public bool IsWalk => _isWalking;
 
     private void Awake()
     {
-        Init();
+        _unitsTracker = transform.parent.gameObject.GetComponent<UnitsTracker>();
+        _unitTaker = GetComponent<UnitTaker>();
+        _speed = _unitsTracker.GetSpeed;
         _startPosition = transform.position;
     }
 
-    private void Init()
+    private void OnEnable()
     {
-        _unitsTracker = transform.parent.gameObject.GetComponent<UnitsTracker>();
-        _speed = _unitsTracker.GetSpeed;
+        _unitTaker.Taken += MoveBack;
     }
 
-    public void Grub(Gold gold)
+    private void OnDisable()
     {
-        gold.ChangeStatus();
-        _moveCoroutine = StartCoroutine(Move(gold));
+        _unitTaker.Taken -= MoveBack;
     }
 
-    private IEnumerator Move(Gold gold)
+    public void Grub(Vector3 goldPosition)
+    {        
+        MoveGold(goldPosition);
+    }        
+
+    private void MoveGold(Vector3 goldPosition)
     {
-        Vector3 targetPosition = gold.transform.position;
+        _moveCoroutine = StartCoroutine(Move(goldPosition));
+    }
 
-        _isGrubing = true;
+    private void MoveBack()
+    {
+        StopCoroutine(_moveCoroutine);
+        _moveCoroutine = StartCoroutine(Move(_startPosition));
+    }
 
-        while (_isGrubing)
-        {
+    private IEnumerator Move(Vector3 targetPosition)
+    {        
             _isWalking = true;
 
             while (_isWalking)
-            {
-                Debug.Log("isWalk");
-
+            {   
                 transform.position = Vector3.MoveTowards(transform.position,
                     targetPosition, _speed * Time.deltaTime);
 
-                if (transform.position == targetPosition)
-                {
-                    if (gold.transform.position == transform.position)
-                    {
-                        
-                    }
-
-                    _isWalking = false;
-                }
+                if (transform.position == targetPosition)                
+                    _isWalking = false;                
 
                 yield return null;
-            }
-
-            if (transform.position == _startPosition)
-                _isGrubing = false;
-            else
-                targetPosition = _startPosition;
-        }
+            } 
 
         StopCoroutine(_moveCoroutine);
+
+        Debug.Log("stoped");
     }
 }

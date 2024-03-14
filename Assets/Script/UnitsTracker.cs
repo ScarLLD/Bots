@@ -1,40 +1,72 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
 public class UnitsTracker : MonoBehaviour
 {
     [SerializeField] private float _speed;
+    [SerializeField] private float _timeBetwenGrub;
     [SerializeField] private UnitMover[] _units;
     [SerializeField] private GoldPool _goldPool;
+    [SerializeField] private GoldScanner _goldScanner;
 
-    private UnitMover unit;
+    private Coroutine _grubCoroutine;
+    private WaitForSeconds _wait;
+    private bool _isGrubing;
+
     public float GetSpeed => _speed;
 
-    public void Grub()
+    private void Awake()
     {
-        if (TryGetUnit())
-        {
-            if (_goldPool.TryGetAvailableGold(out Gold gold))
-            {
-                unit.Grub(gold);
-            }
-        }
+        _wait = new WaitForSeconds(_timeBetwenGrub);
     }
 
-    public bool TryGetUnit()
+    private void OnEnable()
     {
-        unit = null;
+        _goldScanner.Scanned += GrubGold;
+    }
+
+    private void OnDisable()
+    {
+        _goldScanner.Scanned -= GrubGold;
+    }
+
+    public bool TryGetUnit(out UnitMover unit)
+    {
         unit = _units.FirstOrDefault(unit => unit.IsWalk == false);
         return unit != null;
     }
 
-    public void SetContainerParent(Gold gold)
+    public void ConfirmDelivery(Gold gold)
     {
-        _goldPool.SetContainerParent(gold);
+        _goldPool.CollectGold(gold);
     }
 
-    public void SetUnitParent(Gold gold)
+    private void GrubGold()
     {
-        gold.transform.parent = unit.transform;
+        _grubCoroutine = StartCoroutine(Grub());
+    }
+
+    private IEnumerator Grub()
+    {
+        _isGrubing = true;
+
+        while (_isGrubing)
+        {
+
+            if (TryGetUnit(out UnitMover unit))
+            {
+                if (_goldPool.TryGetAvailableGold(out Gold gold))
+                {
+                    unit.Grub(gold.transform.position);
+                    gold.ChangeStatus();
+                }                
+            }
+            
+
+            yield return _wait;
+        }
+
+        StopCoroutine(_grubCoroutine);
     }
 }

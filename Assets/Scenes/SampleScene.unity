@@ -283,7 +283,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -344,6 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1de45d2b27975814f9d3551910c1858b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _timeBetwenSpawn: 5
   _spawnPointsParent: {fileID: 1194046697}
   _goldPool: {fileID: 2048186191}
   _goldPrefab: {fileID: 6626778164229848470, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
@@ -585,7 +586,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -834,7 +835,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1337701350}
+      - m_Target: {fileID: 1646244326}
         m_TargetAssemblyTypeName: GoldScanner, Assembly-CSharp
         m_MethodName: Scan
         m_Mode: 1
@@ -894,7 +895,7 @@ GameObject:
   m_Component:
   - component: {fileID: 667745901}
   m_Layer: 0
-  m_Name: GoldsContainer
+  m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1169,7 +1170,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -1519,12 +1520,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fd782211d554574bbec66cb9c229e48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 5
+  _speed: 15
+  _timeBetwenGrub: 1
   _units:
   - {fileID: 192784110}
   - {fileID: 798099785}
   - {fileID: 613127301}
   _goldPool: {fileID: 2048186191}
+  _goldScanner: {fileID: 1646244326}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1759,6 +1762,52 @@ Transform:
   m_Children:
   - {fileID: 1782196169}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1261069744
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1261069746}
+  - component: {fileID: 1261069745}
+  m_Layer: 0
+  m_Name: ParticlePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1261069745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261069744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bcb7b8461980a04fb31a96380498d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _container: {fileID: 667745901}
+  _goldParticle: {fileID: 2617200730325569116, guid: c15b90867c393764fa7a6a3d46653e04, type: 3}
+--- !u!4 &1261069746
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1261069744}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2048186190}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1300180648
 GameObject:
@@ -2040,8 +2089,8 @@ GameObject:
   - component: {fileID: 1337701348}
   - component: {fileID: 1337701347}
   - component: {fileID: 1337701346}
-  - component: {fileID: 1337701350}
   - component: {fileID: 1337701351}
+  - component: {fileID: 1337701352}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -2134,19 +2183,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1337701350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1337701345}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83d8052b8135bb04f9eb57276d2f1eff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _goldPool: {fileID: 2048186191}
 --- !u!114 &1337701351
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2159,8 +2195,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26026b791db2242498bc18cc2595a937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _text: {fileID: 1307642203}
-  _scanner: {fileID: 1337701350}
+  _scannedCountText: {fileID: 1307642203}
+  _takenCountText: {fileID: 649558401}
+  _scanner: {fileID: 1646244326}
+  _wallet: {fileID: 1337701352}
+--- !u!114 &1337701352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337701345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f0bb66f9d62974ea4c2b0601149768, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _goldPool: {fileID: 2048186191}
 --- !u!1 &1488470540
 GameObject:
   m_ObjectHideFlags: 0
@@ -2303,6 +2354,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1646244325}
+  - component: {fileID: 1646244326}
   m_Layer: 0
   m_Name: GoldScanner
   m_TagString: Untagged
@@ -2325,6 +2377,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1646244326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646244324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d8052b8135bb04f9eb57276d2f1eff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _goldPool: {fileID: 2048186191}
 --- !u!1 &1782196168
 GameObject:
   m_ObjectHideFlags: 0
@@ -2562,7 +2627,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1261069746}
   m_Father: {fileID: 240901792}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2048186191
@@ -2579,6 +2645,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _container: {fileID: 667745901}
   _goldPrefab: {fileID: 6626778164229848470, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
+  _particleGoldPool: {fileID: 1261069745}
 --- !u!1 &2143122066
 GameObject:
   m_ObjectHideFlags: 0
