@@ -2,12 +2,19 @@ using UnityEngine;
 
 public class Gold : MonoBehaviour
 {
-    private bool _isTake = false;
+    private bool _isGrub = false;
+    private bool _isTaken = false;
 
-    public bool IsTake => _isTake;
+    public bool IsGrub => _isGrub;
+    public bool IsTaken => _isTaken;
 
-    public void ChangeStatus()
+    public void ChangeGrubStatus()
     {
-        _isTake = !_isTake;
+        _isGrub = !_isGrub;
+    }
+    
+    public void ChangeTakenStatus()
+    {
+        _isGrub = !_isGrub;
     }
 }

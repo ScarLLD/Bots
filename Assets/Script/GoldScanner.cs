@@ -11,11 +11,6 @@ public class GoldScanner : MonoBehaviour
 
     public event Action Scanned;
 
-    private void Start()
-    {
-        Scan();
-    }
-
     public void Scan()
     {
         GoldCount = _goldPool.GetGoldCount();

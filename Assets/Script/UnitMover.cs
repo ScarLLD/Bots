@@ -1,68 +1,65 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class UnitMover : MonoBehaviour
 {
-    private UnitsTracker _unitsTracker;
     private UnitTaker _unitTaker;
-    private float _speed;
     private Vector3 _startPosition;
     private Coroutine _moveCoroutine;
-    private bool _isWalking;
+    private bool _isMove = false;
+    private float _speed;
 
-    public bool IsWalk => _isWalking;
+    public event Action Arrived;
 
     private void Awake()
     {
-        _unitsTracker = transform.parent.gameObject.GetComponent<UnitsTracker>();
-        _unitTaker = GetComponent<UnitTaker>();
-        _speed = _unitsTracker.GetSpeed;
         _startPosition = transform.position;
+        _unitTaker = GetComponent<UnitTaker>();
+        _speed = transform.parent.GetComponent<UnitsTracker>().GetSpeed;
     }
 
     private void OnEnable()
     {
         _unitTaker.Taken += MoveBack;
     }
-
+    
     private void OnDisable()
     {
         _unitTaker.Taken -= MoveBack;
     }
 
-    public void Grub(Vector3 goldPosition)
-    {        
-        MoveGold(goldPosition);
-    }        
-
-    private void MoveGold(Vector3 goldPosition)
-    {
-        _moveCoroutine = StartCoroutine(Move(goldPosition));
-    }
-
     private void MoveBack()
     {
-        StopCoroutine(_moveCoroutine);
-        _moveCoroutine = StartCoroutine(Move(_startPosition));
+        MoveToPoint(_startPosition);
+    }
+
+    public void MoveToPoint(Vector3 targetPosition)
+    {
+        _moveCoroutine = StartCoroutine(Move(targetPosition));
     }
 
     private IEnumerator Move(Vector3 targetPosition)
-    {        
-            _isWalking = true;
+    {
+        _isMove = true;
 
-            while (_isWalking)
-            {   
-                transform.position = Vector3.MoveTowards(transform.position,
-                    targetPosition, _speed * Time.deltaTime);
+        while (_isMove)
+        {
+            transform.position = Vector3.MoveTowards(transform.position,
+                targetPosition, Time.deltaTime * _speed);
 
-                if (transform.position == targetPosition)                
-                    _isWalking = false;                
+            if (transform.position == targetPosition)
+            {
+                StopMove();
+                Arrived?.Invoke();
+            }
 
-                yield return null;
-            } 
+            yield return null;
+        }
+    }
 
+    private void StopMove()
+    {
         StopCoroutine(_moveCoroutine);
-
-        Debug.Log("stoped");
     }
 }

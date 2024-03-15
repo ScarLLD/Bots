@@ -3,31 +3,75 @@ using UnityEngine;
 
 public class UnitTaker : MonoBehaviour
 {
-    private UnitsTracker _unitsTracker;
+    private UnitMover _unitMover;
     private Gold _gold;
+    private Vector3 _currentGoldPosition;
+    private bool _isBase = false;
+    private bool _isGold = false;
 
     public event Action Taken;
-    public event Action Delivered;
+    public event Action<Gold> Delivered;
 
     private void Awake()
     {
-        _unitsTracker = transform.parent.gameObject.GetComponent<UnitsTracker>();
+        _unitMover = GetComponent<UnitMover>();
+    }
+
+    private void OnEnable()
+    {
+        _unitMover.Arrived += Interact;
+    }
+
+    private void OnDisable()
+    {
+        _unitMover.Arrived -= Interact;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent<Gold>(out Gold gold))
+        if (other.gameObject.TryGetComponent(out Gold gold) && gold.IsTaken == false)
         {
-            Debug.Log("gold taken");
-            _gold = gold;
-            _gold.transform.parent = transform;
-            Taken?.Invoke();
+            if (gold.transform.position == _currentGoldPosition)
+            {
+                _isGold = true;
+                _gold = gold;
+            }
         }
-        else if (other.gameObject.GetComponent<CollectingZone>() && _gold != null)
+        else if (other.gameObject.GetComponent<CollectingZone>())
         {
-            _unitsTracker.ConfirmDelivery(_gold);
+            _isBase = true;
+        }
+    }
+
+    private void OnTriggerExit()
+    {
+        _isGold = false;
+        _isBase = false;
+
+        _gold = null;
+    }
+
+    public void TakeGoldCord(Vector3 goldPosition)
+    {
+        _currentGoldPosition = goldPosition;
+    }
+
+    private void Interact()
+    {        
+        if (_isBase && _gold != null)
+        {
+            Delivered?.Invoke(_gold);
             _gold = null;
-            Delivered?.Invoke();
         }
-    }    
+        else if (_isGold)
+        {
+            TakeGold();
+        }
+    }
+
+    private void TakeGold()
+    {
+        _gold.transform.parent = transform;
+        Taken?.Invoke();
+    }
 }

@@ -53,7 +53,7 @@ public class GoldPool : MonoBehaviour
 
     public bool TryGetAvailableGold(out Gold gold)
     {
-        gold = _pool.Where(gold => gold.gameObject.activeInHierarchy == true).FirstOrDefault(gold => gold.IsTake == false);
+        gold = _pool.Where(gold => gold.gameObject.activeInHierarchy == true).FirstOrDefault(gold => gold.IsGrub == false);
         return gold != null;
     }
 
@@ -73,7 +73,7 @@ public class GoldPool : MonoBehaviour
     public void CollectGold(Gold gold)
     {
         gold.gameObject.SetActive(false);
-        gold.ChangeStatus();
+        gold.ChangeGrubStatus();
         gold.transform.parent = _container.transform;
         _particleGoldPool.GetParticle(gold.transform.position);
         Collected?.Invoke();

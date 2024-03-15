@@ -10,7 +10,6 @@ public class ResourcesSpawner : MonoBehaviour
     [SerializeField] private GoldPool _goldPool;
     [SerializeField] private Gold _goldPrefab;
 
-    private List<Transform> _tempSpawnPoints;
     private Transform[] _spawnPoints;
     private Coroutine _spawnCoroutine;
     private WaitForSeconds _wait;
@@ -22,9 +21,7 @@ public class ResourcesSpawner : MonoBehaviour
         _spawnPoints = new Transform[_spawnPointsParent.childCount];
 
         for (int i = 0; i < _spawnPointsParent.childCount; i++)
-            _spawnPoints[i] = _spawnPointsParent.GetChild(i);
-
-        _tempSpawnPoints = _spawnPoints.ToList();
+            _spawnPoints[i] = _spawnPointsParent.GetChild(i);        
     }
 
     private void Start()
@@ -43,6 +40,8 @@ public class ResourcesSpawner : MonoBehaviour
 
         while (_isGenerate)
         {
+            List<Transform> _tempSpawnPoints = _spawnPoints.ToList();
+
             int goldCount = Random.Range(1, _tempSpawnPoints.Count);
 
             for (int i = 0; i < goldCount; i++)
@@ -50,12 +49,9 @@ public class ResourcesSpawner : MonoBehaviour
                 int index = Random.Range(0, _tempSpawnPoints.Count - 1);
                 Transform spawnPoint = _tempSpawnPoints[index];
 
-                if (_goldPool.TryGetPoint(spawnPoint.position))
-                    _goldPool.GetGold(spawnPoint.position);
+                _goldPool.GetGold(spawnPoint.position);
 
                 _tempSpawnPoints.Remove(spawnPoint);
-
-                //проверка наличие свободных мест для золота, но золото не появлвяется!
             }
 
             yield return _wait;

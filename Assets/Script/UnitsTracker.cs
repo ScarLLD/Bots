@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class UnitsTracker : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _timeBetwenGrub;
-    [SerializeField] private UnitMover[] _units;
+    [SerializeField] private Unit[] _units;
     [SerializeField] private GoldPool _goldPool;
     [SerializeField] private GoldScanner _goldScanner;
 
@@ -15,6 +16,8 @@ public class UnitsTracker : MonoBehaviour
     private bool _isGrubing;
 
     public float GetSpeed => _speed;
+
+    public event Action<Vector3> Extract;
 
     private void Awake()
     {
@@ -31,9 +34,9 @@ public class UnitsTracker : MonoBehaviour
         _goldScanner.Scanned -= GrubGold;
     }
 
-    public bool TryGetUnit(out UnitMover unit)
+    public bool TryGetUnit(out Unit unit)
     {
-        unit = _units.FirstOrDefault(unit => unit.IsWalk == false);
+        unit = _units.First(unit => unit.IsGrub == false);
         return unit != null;
     }
 
@@ -44,7 +47,8 @@ public class UnitsTracker : MonoBehaviour
 
     private void GrubGold()
     {
-        _grubCoroutine = StartCoroutine(Grub());
+        if (_isGrubing == false)
+            _grubCoroutine = StartCoroutine(Grub());
     }
 
     private IEnumerator Grub()
@@ -53,16 +57,16 @@ public class UnitsTracker : MonoBehaviour
 
         while (_isGrubing)
         {
-
-            if (TryGetUnit(out UnitMover unit))
+            if (TryGetUnit(out Unit unit))
             {
                 if (_goldPool.TryGetAvailableGold(out Gold gold))
                 {
-                    unit.Grub(gold.transform.position);
-                    gold.ChangeStatus();
-                }                
+                    gold.ChangeGrubStatus();
+                    unit.ChangeGrubStatus();
+
+                    Extract?.Invoke(gold.transform.position);
+                }
             }
-            
 
             yield return _wait;
         }
