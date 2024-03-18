@@ -4,13 +4,13 @@ using UnityEngine;
 public class UnitTaker : MonoBehaviour
 {
     private UnitMover _unitMover;
-    private Gold _gold;
+    private Resource _gold;
     private Vector3 _currentGoldPosition;
     private bool _isBase = false;
     private bool _isGold = false;
 
     public event Action Taken;
-    public event Action<Gold> Delivered;
+    public event Action<Resource> Delivered;
 
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class UnitTaker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out Gold gold) && gold.IsTaken == false)
+        if (other.gameObject.TryGetComponent(out Resource gold) && gold.IsTaken == false)
         {
             if (gold.transform.position == _currentGoldPosition)
             {
@@ -37,7 +37,7 @@ public class UnitTaker : MonoBehaviour
                 _gold = gold;
             }
         }
-        else if (other.gameObject.GetComponent<CollectingZone>())
+        else if (other.gameObject.GetComponent<Base>())
         {
             _isBase = true;
         }
@@ -47,8 +47,6 @@ public class UnitTaker : MonoBehaviour
     {
         _isGold = false;
         _isBase = false;
-
-        _gold = null;
     }
 
     public void TakeGoldCord(Vector3 goldPosition)
@@ -57,14 +55,18 @@ public class UnitTaker : MonoBehaviour
     }
 
     private void Interact()
-    {        
+    {
+        Debug.Log("IsInteract");
+
         if (_isBase && _gold != null)
         {
+            Debug.Log("isBase");
             Delivered?.Invoke(_gold);
             _gold = null;
         }
         else if (_isGold)
         {
+            Debug.Log("isGold");
             TakeGold();
         }
     }

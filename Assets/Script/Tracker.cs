@@ -3,21 +3,19 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-public class UnitsTracker : MonoBehaviour
+public class Tracker : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _timeBetwenGrub;
     [SerializeField] private Unit[] _units;
-    [SerializeField] private GoldPool _goldPool;
-    [SerializeField] private GoldScanner _goldScanner;
+    [SerializeField] private ResourcePool _goldPool;
+    [SerializeField] private Scanner _goldScanner;
 
     private Coroutine _grubCoroutine;
     private WaitForSeconds _wait;
     private bool _isGrubing;
 
     public float GetSpeed => _speed;
-
-    public event Action<Vector3> Extract;
 
     private void Awake()
     {
@@ -26,26 +24,26 @@ public class UnitsTracker : MonoBehaviour
 
     private void OnEnable()
     {
-        _goldScanner.Scanned += GrubGold;
+        _goldScanner.Scanned += GrubResources;
     }
 
     private void OnDisable()
     {
-        _goldScanner.Scanned -= GrubGold;
+        _goldScanner.Scanned -= GrubResources;
     }
 
     public bool TryGetUnit(out Unit unit)
     {
-        unit = _units.First(unit => unit.IsGrub == false);
+        unit = _units.FirstOrDefault(unit => unit.IsGrub == false);
         return unit != null;
     }
 
-    public void ConfirmDelivery(Gold gold)
+    public void ConfirmDelivery(Resource gold)
     {
         _goldPool.CollectGold(gold);
     }
 
-    private void GrubGold()
+    private void GrubResources()
     {
         if (_isGrubing == false)
             _grubCoroutine = StartCoroutine(Grub());
@@ -59,12 +57,12 @@ public class UnitsTracker : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_goldPool.TryGetAvailableGold(out Gold gold))
+                if (_goldPool.TryGetNotGrubResource(out Resource gold))
                 {
                     gold.ChangeGrubStatus();
                     unit.ChangeGrubStatus();
 
-                    Extract?.Invoke(gold.transform.position);
+                    unit.StartGrub(gold.transform.position);
                 }
             }
 

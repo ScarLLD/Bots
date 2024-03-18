@@ -16,7 +16,7 @@ public class UnitMover : MonoBehaviour
     {
         _startPosition = transform.position;
         _unitTaker = GetComponent<UnitTaker>();
-        _speed = transform.parent.GetComponent<UnitsTracker>().GetSpeed;
+        _speed = transform.parent.GetComponent<Tracker>().GetSpeed;
     }
 
     private void OnEnable()

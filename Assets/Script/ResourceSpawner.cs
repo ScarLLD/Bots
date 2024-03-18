@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ResourcesSpawner : MonoBehaviour
+public class ResourceSpawner : MonoBehaviour
 {
     [SerializeField] private float _timeBetwenSpawn;
     [SerializeField] private Transform _spawnPointsParent;
-    [SerializeField] private GoldPool _goldPool;
-    [SerializeField] private Gold _goldPrefab;
+    [SerializeField] private ResourcePool _goldPool;
 
     private Transform[] _spawnPoints;
     private Coroutine _spawnCoroutine;
@@ -21,7 +20,7 @@ public class ResourcesSpawner : MonoBehaviour
         _spawnPoints = new Transform[_spawnPointsParent.childCount];
 
         for (int i = 0; i < _spawnPointsParent.childCount; i++)
-            _spawnPoints[i] = _spawnPointsParent.GetChild(i);        
+            _spawnPoints[i] = _spawnPointsParent.GetChild(i);
     }
 
     private void Start()
@@ -49,7 +48,8 @@ public class ResourcesSpawner : MonoBehaviour
                 int index = Random.Range(0, _tempSpawnPoints.Count - 1);
                 Transform spawnPoint = _tempSpawnPoints[index];
 
-                _goldPool.GetGold(spawnPoint.position);
+                if (_goldPool.TryGetSpawnPoint(spawnPoint.position) == false)
+                    _goldPool.GetGold(spawnPoint.position);
 
                 _tempSpawnPoints.Remove(spawnPoint);
             }

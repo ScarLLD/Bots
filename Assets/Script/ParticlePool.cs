@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ParticleGoldPool : MonoBehaviour
+public class ParticlePool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
     [SerializeField] private ParticleSystem _goldParticle;

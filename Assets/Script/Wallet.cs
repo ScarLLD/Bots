@@ -3,27 +3,24 @@ using UnityEngine;
 
 public class Wallet : MonoBehaviour
 {
-    [SerializeField] private GoldPool _goldPool;
+    [SerializeField] private ResourcePool _resourcePool;
 
     private int _goldCount;
-
-    public event Action Collected;
 
     public int GetGoldCount => _goldCount;
 
     private void OnEnable()
     {
-        _goldPool.Collected += CollectGold;
+        _resourcePool.Collected += CollectResource;
     }
 
     private void OnDisable()
     {
-        _goldPool.Collected -= CollectGold;
+        _resourcePool.Collected -= CollectResource;
     }
 
-    private void CollectGold()
+    private void CollectResource()
     {
         _goldCount++;
-        Collected?.Invoke();
     }    
 }
