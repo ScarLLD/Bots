@@ -1,20 +1,19 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public class Scanner : MonoBehaviour
 {
-    [SerializeField] private ResourcePool _goldPool;
+    [SerializeField] private ResourcePool _resourcePool;
 
-    private int GoldCount;
+    private int ResourceCount;
 
-    public int GetResourceCount => GoldCount;
-
-    public event Action Scanned;
+    public event Action<int> Scanned;
 
     public void Scan()
     {
-        GoldCount = _goldPool.GetResourceCount();
+        ResourceCount = _resourcePool.PooledObject.Count();
 
-        Scanned?.Invoke();        
+        Scanned?.Invoke(ResourceCount);        
     }
 }

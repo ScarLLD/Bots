@@ -29,7 +29,7 @@ public class UnitTaker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out Resource gold) && gold.IsTaken == false)
+        if (other.gameObject.TryGetComponent(out Resource gold))
         {
             if (gold.transform.position == _currentGoldPosition)
             {
@@ -56,17 +56,17 @@ public class UnitTaker : MonoBehaviour
 
     private void Interact()
     {
-        Debug.Log("IsInteract");
+        //Debug.Log("IsInteract");
 
         if (_isBase && _gold != null)
         {
-            Debug.Log("isBase");
+            //Debug.Log("isBase");
             Delivered?.Invoke(_gold);
             _gold = null;
         }
         else if (_isGold)
         {
-            Debug.Log("isGold");
+            //Debug.Log("isGold");
             TakeGold();
         }
     }

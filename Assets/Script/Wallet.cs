@@ -5,7 +5,7 @@ public class Wallet : MonoBehaviour
 {
     [SerializeField] private ResourcePool _resourcePool;
 
-    private int _goldCount;
+    private int _goldCount = 0;
 
     public int GetGoldCount => _goldCount;
 
@@ -21,6 +21,6 @@ public class Wallet : MonoBehaviour
 
     private void CollectResource()
     {
-        _goldCount++;
-    }    
+        _goldCount += 1;
+    }
 }

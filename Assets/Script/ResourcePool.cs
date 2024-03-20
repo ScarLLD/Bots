@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,70 +8,87 @@ public class ResourcePool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
     [SerializeField] private Resource _goldPrefab;
-    [SerializeField] private ParticlePool _particleGoldPool;
+    [SerializeField] private ParticlePool _particlePool;
+
+    private Queue<Resource> _pool;
+
+    public IEnumerable<Resource> PooledObject => _pool;
 
     public event Action Collected;
 
-    private List<Resource> _pool;
-
     private void Awake()
     {
-        _pool = new List<Resource>();
+        _pool = new Queue<Resource>();
     }
 
-    public int GetResourceCount() => GetActiveResources().Count();
-
-    public void GetGold(Vector3 spawnPoint)
+    public Resource GetResource()
     {
-        if (TryGetResource(out Resource gold))
+        if (_pool.Count == 0)
         {
-            gold.transform.parent = _container;
-            gold.transform.position = spawnPoint;
-            gold.gameObject.SetActive(true);
+            var resource = Instantiate(_goldPrefab, transform.position, transform.rotation);
+            resource.transform.parent = _container;
 
+
+            return resource;
         }
-        else
-        {
-            Resource goldStorage = Instantiate(_goldPrefab, spawnPoint, Quaternion.identity);
 
-            _pool.Add(goldStorage);
-
-            goldStorage.transform.parent = _container;
-            goldStorage.gameObject.SetActive(true);
-        }
+        return _pool.Dequeue();
     }
 
-    public IEnumerable<Resource> GetActiveResources()
+    public void PutResource(Resource resource)
     {
-        return _pool.Where(gold => gold.gameObject.activeInHierarchy == true);
+        resource.gameObject.SetActive(false);
+        resource.transform.parent = _container;
+        _pool.Enqueue(resource);
     }
 
-    public bool TryGetResource(out Resource gold)
+    public void CollectResource(Resource resource)
     {
-        gold = _pool.FirstOrDefault(gold => gold.gameObject.activeInHierarchy == false);
-        return gold != null;
-    }
+        PutResource(resource);
+        resource.ChangeGrubBool();
 
-    public bool TryGetNotGrubResource(out Resource gold)
-    {
-        gold = GetActiveResources().FirstOrDefault(gold => gold.IsGrub == false);
-        return gold != null;
-    }
-
-    public bool TryGetSpawnPoint(Vector3 tempPosition)
-    {
-        return GetActiveResources().Any(gold => gold.transform.position == tempPosition);
-    }  
-
-    public void CollectGold(Resource gold)
-    {
-        gold.gameObject.SetActive(false);
-        gold.ChangeGrubStatus();
-        gold.transform.parent = _container.transform;
-
-        _particleGoldPool.GetParticle(gold.transform.position);
+        SpawnParticle(resource.transform.position);
 
         Collected?.Invoke();
-        Debug.Log("Collected");
+    }
+
+    private void SpawnParticle(Vector3 spawnPosition)
+    {
+        ParticleSystem particle = _particlePool.GetParticle();
+
+        particle.transform.position = spawnPosition;
+        particle.gameObject.SetActive(true);
+    }
+
+    public bool TrySpawn(Vector3 resourcePosition)
+    {
+        bool isEmpty = true;
+
+        isEmpty = GetActiveResources().Any(resource => resource.transform.position == resourcePosition);
+
+        return !isEmpty;
+    }
+
+    public bool TrySelectResource(out Resource resource)
+    {
+        resource = GetActiveResources().FirstOrDefault(resource => resource.IsGrub == false);
+        return resource != null;
+    }
+
+    private IEnumerable<Resource> GetActiveResources()
+    {
+        return GetAllResources().Where(resource => resource.gameObject.activeInHierarchy == true);
+    }
+
+    private IEnumerable<Resource> GetAllResources()
+    {
+        List<Resource> resources = new List<Resource>();
+
+        for (int i = 0; i < _container.childCount; i++)
+        {
+            resources.Add(_container.GetChild(i).GetComponent<Resource>());
+        }
+
+        return resources;
     }
 }

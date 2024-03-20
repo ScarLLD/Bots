@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -8,12 +7,12 @@ public class Tracker : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _timeBetwenGrub;
     [SerializeField] private Unit[] _units;
-    [SerializeField] private ResourcePool _goldPool;
-    [SerializeField] private Scanner _goldScanner;
+    [SerializeField] private ResourcePool _resourcePool;
+    [SerializeField] private Scanner _scanner;
 
     private Coroutine _grubCoroutine;
     private WaitForSeconds _wait;
-    private bool _isGrubing;
+    private bool _isGrubing = false;
 
     public float GetSpeed => _speed;
 
@@ -24,12 +23,12 @@ public class Tracker : MonoBehaviour
 
     private void OnEnable()
     {
-        _goldScanner.Scanned += GrubResources;
+        _scanner.Scanned += GrubResources;
     }
 
     private void OnDisable()
     {
-        _goldScanner.Scanned -= GrubResources;
+        _scanner.Scanned -= GrubResources;
     }
 
     public bool TryGetUnit(out Unit unit)
@@ -38,15 +37,17 @@ public class Tracker : MonoBehaviour
         return unit != null;
     }
 
-    public void ConfirmDelivery(Resource gold)
+    public void ConfirmDelivery(Resource resource)
     {
-        _goldPool.CollectGold(gold);
+        _resourcePool.CollectResource(resource);
     }
 
-    private void GrubResources()
+    private void GrubResources(int ResourceCount)
     {
         if (_isGrubing == false)
+        {
             _grubCoroutine = StartCoroutine(Grub());
+        }
     }
 
     private IEnumerator Grub()
@@ -57,12 +58,10 @@ public class Tracker : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_goldPool.TryGetNotGrubResource(out Resource gold))
+                if (_resourcePool.TrySelectResource(out Resource resource))
                 {
-                    gold.ChangeGrubStatus();
-                    unit.ChangeGrubStatus();
-
-                    unit.StartGrub(gold.transform.position);
+                    resource.ChangeGrubBool();    
+                    unit.StartGrub(resource.transform.position);
                 }
             }
 

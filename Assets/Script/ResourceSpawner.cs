@@ -7,7 +7,7 @@ public class ResourceSpawner : MonoBehaviour
 {
     [SerializeField] private float _timeBetwenSpawn;
     [SerializeField] private Transform _spawnPointsParent;
-    [SerializeField] private ResourcePool _goldPool;
+    [SerializeField] private ResourcePool _resourcePool;
 
     private Transform[] _spawnPoints;
     private Coroutine _spawnCoroutine;
@@ -43,15 +43,22 @@ public class ResourceSpawner : MonoBehaviour
 
             int goldCount = Random.Range(1, _tempSpawnPoints.Count);
 
+            Debug.Log($"Количество в пуле: {_resourcePool.PooledObject.Count()}");
+
             for (int i = 0; i < goldCount; i++)
             {
                 int index = Random.Range(0, _tempSpawnPoints.Count - 1);
                 Transform spawnPoint = _tempSpawnPoints[index];
 
-                if (_goldPool.TryGetSpawnPoint(spawnPoint.position) == false)
-                    _goldPool.GetGold(spawnPoint.position);
+                if (_resourcePool.TrySpawn(spawnPoint.position))
+                {
+                    Resource resource = _resourcePool.GetResource();
 
-                _tempSpawnPoints.Remove(spawnPoint);
+                    resource.transform.position = spawnPoint.position;
+                    resource.gameObject.SetActive(true);
+
+                    _tempSpawnPoints.Remove(spawnPoint);
+                }
             }
 
             yield return _wait;

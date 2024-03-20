@@ -1,43 +1,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 public class ParticlePool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
-    [SerializeField] private ParticleSystem _goldParticle;
+    [SerializeField] private ParticleSystem _particlePrefab;
 
-    private List<ParticleSystem> _pool;
-    public int GetParticleCount => _pool.Count;
-    
+    private Queue<ParticleSystem> _pool;
+
     private void Awake()
     {
-        _pool = new List<ParticleSystem>();
+        _pool = new Queue<ParticleSystem>();
     }
 
-    public void GetParticle(Vector3 spawnPoint)
+    public ParticleSystem GetParticle()
     {
-        if (TryGetParticle(out ParticleSystem particle))
+        if (_pool.Count == 0)
         {
-            particle.transform.parent = _container;
-            particle.transform.position = spawnPoint;
-            particle.gameObject.SetActive(true);
+            ParticleSystem particle = Instantiate(_particlePrefab, transform.position, transform.rotation);
+            particle.transform.parent = _container;            
 
+            return particle;
         }
-        else
-        {
-            ParticleSystem goldStorage = Instantiate(_goldParticle, spawnPoint, Quaternion.identity);
 
-            _pool.Add(goldStorage);
-
-            goldStorage.transform.parent = _container;
-            goldStorage.gameObject.SetActive(true);
-        }
+        return _pool.Dequeue();
     }
 
-    public bool TryGetParticle(out ParticleSystem particle)
+    public void PutResource(ParticleSystem particle)
     {
-        particle = _pool.FirstOrDefault(particle => particle.gameObject.activeInHierarchy == false);
-        return particle != null;
+        particle.gameObject.SetActive(false);
+        particle.transform.parent = _container;
+        _pool.Enqueue(particle);
     }
 }

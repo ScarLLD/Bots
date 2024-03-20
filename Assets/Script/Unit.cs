@@ -30,6 +30,7 @@ public class Unit : MonoBehaviour
 
     public void StartGrub(Vector3 goldPosition)
     {
+        ChangeGrubBool();
         _unitMover.MoveToPoint(goldPosition);
         _unitTaker.TakeGoldCord(goldPosition);
     }
@@ -37,10 +38,10 @@ public class Unit : MonoBehaviour
     private void ConfirmDelivery(Resource gold)
     {
         _unitsTracker.ConfirmDelivery(gold);
-        ChangeGrubStatus();
+        ChangeGrubBool();
     }
 
-    public void ChangeGrubStatus()
+    public void ChangeGrubBool()
     {
         _isGrub = !_isGrub;
     }

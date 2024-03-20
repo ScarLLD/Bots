@@ -8,12 +8,7 @@ public class Resource : MonoBehaviour
     public bool IsGrub => _isGrub;
     public bool IsTaken => _isTaken;
 
-    public void ChangeGrubStatus()
-    {
-        _isGrub = !_isGrub;
-    }
-    
-    public void ChangeTakenStatus()
+    public void ChangeGrubBool()
     {
         _isGrub = !_isGrub;
     }

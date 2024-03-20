@@ -359,7 +359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timeBetwenSpawn: 5
   _spawnPointsParent: {fileID: 1194046697}
-  _goldPool: {fileID: 2048186191}
+  _resourcePool: {fileID: 2048186191}
 --- !u!4 &240901792
 Transform:
   m_ObjectHideFlags: 0
@@ -377,6 +377,7 @@ Transform:
   - {fileID: 2048186190}
   - {fileID: 1261069746}
   - {fileID: 667745901}
+  - {fileID: 894497333}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &256671927
@@ -907,7 +908,7 @@ GameObject:
   m_Component:
   - component: {fileID: 667745901}
   m_Layer: 0
-  m_Name: Container
+  m_Name: ResourceContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1392,6 +1393,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1194046697}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &894497332
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 894497333}
+  m_Layer: 0
+  m_Name: ParticleContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &894497333
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 894497332}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 240901792}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &905179763
 GameObject:
   m_ObjectHideFlags: 0
@@ -1551,8 +1583,8 @@ MonoBehaviour:
   - {fileID: 192784111}
   - {fileID: 798099786}
   - {fileID: 613127303}
-  _goldPool: {fileID: 2048186191}
-  _goldScanner: {fileID: 1646244326}
+  _resourcePool: {fileID: 2048186191}
+  _scanner: {fileID: 1646244326}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1817,7 +1849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bcb7b8461980a04fb31a96380498d01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _container: {fileID: 667745901}
+  _container: {fileID: 894497333}
   _goldParticle: {fileID: 2617200730325569116, guid: c15b90867c393764fa7a6a3d46653e04, type: 3}
 --- !u!4 &1261069746
 Transform:
@@ -2011,7 +2043,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83d8052b8135bb04f9eb57276d2f1eff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _goldPool: {fileID: 2048186191}
+  _resourcePool: {fileID: 2048186191}
 --- !u!1 &1782196168
 GameObject:
   m_ObjectHideFlags: 0
@@ -2230,7 +2262,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2048186190}
   - component: {fileID: 2048186191}
-  - component: {fileID: 2048186192}
   m_Layer: 0
   m_Name: GoldPool
   m_TagString: Untagged
@@ -2267,19 +2298,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _container: {fileID: 667745901}
   _goldPrefab: {fileID: 6626778164229848470, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
-  _particleGoldPool: {fileID: 1261069745}
---- !u!114 &2048186192
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2048186189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a520ecc5a377ce94a9cf165013d9f8e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _particlePool: {fileID: 1261069745}
 --- !u!1 &2143122066
 GameObject:
   m_ObjectHideFlags: 0

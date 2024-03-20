@@ -7,6 +7,11 @@ public class DisplayInfo : MonoBehaviour
     [SerializeField] private ResourcePool _resourcePool;
     [SerializeField] private Wallet _wallet;
 
+    private void Awake()
+    {
+        ShowTakenResourceCount();
+    }
+
     private void OnEnable()
     {
         _resourcePool.Collected += ShowTakenResourceCount;
