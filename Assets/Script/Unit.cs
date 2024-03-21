@@ -7,9 +7,7 @@ public class Unit : MonoBehaviour
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
 
-    private bool _isGrub = false;
-
-    public bool IsGrub => _isGrub;
+    public Resource GetTargetResource => _unitTaker.GetTargetResource;
 
     private void Awake()
     {
@@ -28,21 +26,14 @@ public class Unit : MonoBehaviour
         _unitTaker.Delivered -= ConfirmDelivery;
     }
 
-    public void StartGrub(Vector3 goldPosition)
-    {
-        ChangeGrubBool();
-        _unitMover.MoveToPoint(goldPosition);
-        _unitTaker.TakeGoldCord(goldPosition);
+    public void StartGrub(Resource resource)
+    {        
+        _unitMover.MoveToPoint(resource.transform.position);
+        _unitTaker.ChooseTarget(resource);
     }
 
     private void ConfirmDelivery(Resource gold)
     {
         _unitsTracker.ConfirmDelivery(gold);
-        ChangeGrubBool();
-    }
-
-    public void ChangeGrubBool()
-    {
-        _isGrub = !_isGrub;
     }
 }

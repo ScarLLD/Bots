@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,8 +10,6 @@ public class ResourcePool : MonoBehaviour
     [SerializeField] private ParticlePool _particlePool;
 
     private Queue<Resource> _pool;
-
-    public IEnumerable<Resource> PooledObject => _pool;
 
     public event Action Collected;
 
@@ -27,7 +24,6 @@ public class ResourcePool : MonoBehaviour
         {
             var resource = Instantiate(_goldPrefab, transform.position, transform.rotation);
             resource.transform.parent = _container;
-
 
             return resource;
         }
@@ -52,14 +48,6 @@ public class ResourcePool : MonoBehaviour
         Collected?.Invoke();
     }
 
-    private void SpawnParticle(Vector3 spawnPosition)
-    {
-        ParticleSystem particle = _particlePool.GetParticle();
-
-        particle.transform.position = spawnPosition;
-        particle.gameObject.SetActive(true);
-    }
-
     public bool TrySpawn(Vector3 resourcePosition)
     {
         bool isEmpty = true;
@@ -75,9 +63,17 @@ public class ResourcePool : MonoBehaviour
         return resource != null;
     }
 
-    private IEnumerable<Resource> GetActiveResources()
+    public IEnumerable<Resource> GetActiveResources()
     {
         return GetAllResources().Where(resource => resource.gameObject.activeInHierarchy == true);
+    }
+
+    private void SpawnParticle(Vector3 spawnPosition)
+    {
+        ParticleSystem particle = _particlePool.GetParticle();
+
+        particle.transform.position = spawnPosition;
+        particle.gameObject.SetActive(true);
     }
 
     private IEnumerable<Resource> GetAllResources()

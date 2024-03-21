@@ -23,15 +23,10 @@ public class UnitMover : MonoBehaviour
     {
         _unitTaker.Taken += MoveBack;
     }
-    
+
     private void OnDisable()
     {
         _unitTaker.Taken -= MoveBack;
-    }
-
-    private void MoveBack()
-    {
-        MoveToPoint(_startPosition);
     }
 
     public void MoveToPoint(Vector3 targetPosition)
@@ -39,9 +34,16 @@ public class UnitMover : MonoBehaviour
         _moveCoroutine = StartCoroutine(Move(targetPosition));
     }
 
+    private void MoveBack()
+    {
+        MoveToPoint(_startPosition);
+    }
+
     private IEnumerator Move(Vector3 targetPosition)
     {
         _isMove = true;
+
+        transform.LookAt(targetPosition);
 
         while (_isMove)
         {

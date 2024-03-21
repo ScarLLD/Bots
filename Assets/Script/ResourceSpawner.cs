@@ -43,8 +43,6 @@ public class ResourceSpawner : MonoBehaviour
 
             int goldCount = Random.Range(1, _tempSpawnPoints.Count);
 
-            Debug.Log($"Количество в пуле: {_resourcePool.PooledObject.Count()}");
-
             for (int i = 0; i < goldCount; i++)
             {
                 int index = Random.Range(0, _tempSpawnPoints.Count - 1);

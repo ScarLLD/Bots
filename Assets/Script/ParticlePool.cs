@@ -1,37 +1,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
 
 public class ParticlePool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
     [SerializeField] private ParticleSystem _particlePrefab;
+    [SerializeField] private Vector3 _rotation;
 
-    private Queue<ParticleSystem> _pool;
+    private List<ParticleSystem> _particles;
 
     private void Awake()
     {
-        _pool = new Queue<ParticleSystem>();
+        _particles = new List<ParticleSystem>();
     }
 
     public ParticleSystem GetParticle()
     {
-        if (_pool.Count == 0)
+        if (TryGetParticle(out ParticleSystem particle))
         {
-            ParticleSystem particle = Instantiate(_particlePrefab, transform.position, transform.rotation);
-            particle.transform.parent = _container;            
+            return particle;
+        }
+        else
+        {
+            particle = Instantiate(_particlePrefab, transform.position, transform.rotation);
+            particle.transform.Rotate(_rotation);
+            particle.transform.parent = _container;
+
+            _particles.Add(particle);
 
             return particle;
         }
-
-        return _pool.Dequeue();
     }
 
-    public void PutResource(ParticleSystem particle)
+    private bool TryGetParticle(out ParticleSystem particle)
     {
-        particle.gameObject.SetActive(false);
-        particle.transform.parent = _container;
-        _pool.Enqueue(particle);
+        particle = _particles.FirstOrDefault(particle => particle.gameObject.activeInHierarchy == false);
+
+        return particle != null;
     }
 }

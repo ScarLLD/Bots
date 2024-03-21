@@ -9,6 +9,8 @@ public class Wallet : MonoBehaviour
 
     public int GetGoldCount => _goldCount;
 
+    public event Action Changed;
+
     private void OnEnable()
     {
         _resourcePool.Collected += CollectResource;
@@ -22,5 +24,7 @@ public class Wallet : MonoBehaviour
     private void CollectResource()
     {
         _goldCount += 1;
+
+        Changed?.Invoke();
     }
 }

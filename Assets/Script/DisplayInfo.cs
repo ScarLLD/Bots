@@ -4,7 +4,6 @@ using UnityEngine;
 public class DisplayInfo : MonoBehaviour
 {
     [SerializeField] private TMP_Text _takenGoldCount;
-    [SerializeField] private ResourcePool _resourcePool;
     [SerializeField] private Wallet _wallet;
 
     private void Awake()
@@ -14,12 +13,12 @@ public class DisplayInfo : MonoBehaviour
 
     private void OnEnable()
     {
-        _resourcePool.Collected += ShowTakenResourceCount;
+        _wallet.Changed += ShowTakenResourceCount;
     }
 
     private void OnDisable()
     {
-        _resourcePool.Collected -= ShowTakenResourceCount;
+        _wallet.Changed -= ShowTakenResourceCount;
     }
 
     private void ShowTakenResourceCount()

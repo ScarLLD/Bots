@@ -4,17 +4,21 @@ using UnityEngine;
 public class UnitTaker : MonoBehaviour
 {
     private UnitMover _unitMover;
-    private Resource _gold;
-    private Vector3 _currentGoldPosition;
+    private Resource _targetResource;
+    private Resource _tempResource;
     private bool _isBase = false;
     private bool _isGold = false;
+    private Vector3 _objectPosition;
 
     public event Action Taken;
     public event Action<Resource> Delivered;
 
+    public Resource GetTargetResource => _targetResource;
+
     private void Awake()
     {
         _unitMover = GetComponent<UnitMover>();
+        _objectPosition = transform.GetChild(0).localPosition;
     }
 
     private void OnEnable()
@@ -31,10 +35,10 @@ public class UnitTaker : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out Resource gold))
         {
-            if (gold.transform.position == _currentGoldPosition)
+            if (gold == _targetResource)
             {
                 _isGold = true;
-                _gold = gold;
+                _tempResource = gold;
             }
         }
         else if (other.gameObject.GetComponent<Base>())
@@ -49,31 +53,31 @@ public class UnitTaker : MonoBehaviour
         _isBase = false;
     }
 
-    public void TakeGoldCord(Vector3 goldPosition)
+    public void ChooseTarget(Resource resource)
     {
-        _currentGoldPosition = goldPosition;
+        _targetResource = resource;
     }
 
     private void Interact()
     {
-        //Debug.Log("IsInteract");
-
-        if (_isBase && _gold != null)
+        if (_isBase && _tempResource != null)
         {
-            //Debug.Log("isBase");
-            Delivered?.Invoke(_gold);
-            _gold = null;
+            Delivered?.Invoke(_tempResource);
+
+            _tempResource = null;
+            _targetResource = null;
         }
         else if (_isGold)
         {
-            //Debug.Log("isGold");
             TakeGold();
         }
     }
 
     private void TakeGold()
     {
-        _gold.transform.parent = transform;
+        _tempResource.transform.parent = transform;
+        _tempResource.transform.localPosition = _objectPosition;
+
         Taken?.Invoke();
     }
 }
