@@ -1,14 +1,16 @@
 ﻿using System;
 using UnityEngine;
 
+[RequireComponent(typeof(UnitMover))]
 public class UnitTaker : MonoBehaviour
 {
+    [SerializeField] private Vector3 _objectPosition;
+
     private UnitMover _unitMover;
     private Resource _targetResource;
     private Resource _tempResource;
     private bool _isBase = false;
     private bool _isGold = false;
-    private Vector3 _objectPosition;
 
     public event Action Taken;
     public event Action<Resource> Delivered;
@@ -18,7 +20,6 @@ public class UnitTaker : MonoBehaviour
     private void Awake()
     {
         _unitMover = GetComponent<UnitMover>();
-        _objectPosition = transform.GetChild(0).localPosition;
     }
 
     private void OnEnable()

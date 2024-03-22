@@ -11,7 +11,7 @@ public class ResourcePool : MonoBehaviour
 
     private Queue<Resource> _pool;
 
-    public event Action Collected;
+    public event Action ResourceCollected;
 
     private void Awake()
     {
@@ -22,8 +22,7 @@ public class ResourcePool : MonoBehaviour
     {
         if (_pool.Count == 0)
         {
-            var resource = Instantiate(_goldPrefab, transform.position, transform.rotation);
-            resource.transform.parent = _container;
+            var resource = Instantiate(_goldPrefab, transform.position, transform.rotation, _container);
 
             return resource;
         }
@@ -45,7 +44,7 @@ public class ResourcePool : MonoBehaviour
 
         SpawnParticle(resource.transform.position);
 
-        Collected?.Invoke();
+        ResourceCollected?.Invoke();
     }
 
     public bool TrySpawn(Vector3 resourcePosition)

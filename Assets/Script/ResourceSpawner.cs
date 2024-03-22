@@ -10,7 +10,6 @@ public class ResourceSpawner : MonoBehaviour
     [SerializeField] private ResourcePool _resourcePool;
 
     private Transform[] _spawnPoints;
-    private Coroutine _spawnCoroutine;
     private WaitForSeconds _wait;
     private bool _isGenerate;
 
@@ -25,10 +24,10 @@ public class ResourceSpawner : MonoBehaviour
 
     private void Start()
     {
-        GenerateGold();
+        GenerateResources();
     }
 
-    private void GenerateGold()
+    private void GenerateResources()
     {
         StartCoroutine(Generate());
     }
@@ -61,7 +60,5 @@ public class ResourceSpawner : MonoBehaviour
 
             yield return _wait;
         }
-
-        StopCoroutine(_spawnCoroutine);
     }
 }

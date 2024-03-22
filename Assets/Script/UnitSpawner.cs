@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.FilePathAttribute;
-using static UnityEngine.UI.Image;
 
 public class UnitSpawner : MonoBehaviour
 {
-
     [SerializeField] private int _unitsCount;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private Unit _unitPrefab;

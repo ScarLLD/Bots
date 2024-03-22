@@ -11,7 +11,6 @@ public class Tracker : MonoBehaviour
     [SerializeField] private Scanner _scanner;
 
     private List<Unit> _units;
-    private Coroutine _grubCoroutine;
     private WaitForSeconds _wait;
     private bool _isGrubing = false;
 
@@ -53,7 +52,7 @@ public class Tracker : MonoBehaviour
     {
         if (_isGrubing == false && ResourceCount > 0)
         {
-            _grubCoroutine = StartCoroutine(Grub());
+            StartCoroutine(Grub());
         }
     }
 
@@ -64,17 +63,10 @@ public class Tracker : MonoBehaviour
         while (_isGrubing)
         {
             if (TryGetUnit(out Unit unit))
-            {
                 if (_resourcePool.TrySelectResource(out Resource resource))
-                {
-                    resource.ChangeGrubBool();
                     unit.StartGrub(resource);
-                }
-            }
 
             yield return _wait;
         }
-
-        StopCoroutine(_grubCoroutine);
     }
 }

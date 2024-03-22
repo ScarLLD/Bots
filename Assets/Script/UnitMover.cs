@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(UnitTaker))]
 public class UnitMover : MonoBehaviour
 {
     private UnitTaker _unitTaker;
     private Vector3 _startPosition;
-    private Coroutine _moveCoroutine;
     private bool _isMove = false;
     private float _speed;
 
@@ -31,7 +31,7 @@ public class UnitMover : MonoBehaviour
 
     public void MoveToPoint(Vector3 targetPosition)
     {
-        _moveCoroutine = StartCoroutine(Move(targetPosition));
+        StartCoroutine(Move(targetPosition));
     }
 
     private void MoveBack()
@@ -50,18 +50,12 @@ public class UnitMover : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position,
                 targetPosition, Time.deltaTime * _speed);
 
-            if (transform.position == targetPosition)
-            {
-                StopMove();
-                Arrived?.Invoke();
-            }
+            if (transform.position == targetPosition)            
+                _isMove = false; 
 
             yield return null;
         }
-    }
 
-    private void StopMove()
-    {
-        StopCoroutine(_moveCoroutine);
+        Arrived?.Invoke();
     }
 }

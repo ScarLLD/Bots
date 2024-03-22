@@ -1,6 +1,8 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(UnitMover))]
+[RequireComponent(typeof(UnitTaker))]
 public class Unit : MonoBehaviour
 {
     private Tracker _unitsTracker;
@@ -27,7 +29,8 @@ public class Unit : MonoBehaviour
     }
 
     public void StartGrub(Resource resource)
-    {        
+    {
+        resource.ChangeGrubBool();
         _unitMover.MoveToPoint(resource.transform.position);
         _unitTaker.ChooseTarget(resource);
     }
