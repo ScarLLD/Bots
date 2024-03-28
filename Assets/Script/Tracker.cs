@@ -7,9 +7,8 @@ public class Tracker : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _timeBetwenGrub;
-    [SerializeField] private ResourcePool _resourcePool;
-    [SerializeField] private Scanner _scanner;
 
+    private ResourcePool _resourcePool;
     private List<Unit> _units;
     private WaitForSeconds _wait;
     private bool _isGrubing = false;
@@ -17,19 +16,19 @@ public class Tracker : MonoBehaviour
     public float GetSpeed => _speed;
 
     private void Awake()
-    {      
+    {        
         _units = new List<Unit>();
         _wait = new WaitForSeconds(_timeBetwenGrub);
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        _scanner.Scanned += GrubResources;
+        StartCoroutine(Scan());
     }
 
-    private void OnDisable()
-    {
-        _scanner.Scanned -= GrubResources;
+    public void Init(ResourcePool resourcePool)
+    {        
+        _resourcePool = resourcePool;
     }
 
     public bool TryGetUnit(out Unit unit)
@@ -48,23 +47,19 @@ public class Tracker : MonoBehaviour
         _units.Add(unit);
     }
 
-    private void GrubResources(int ResourceCount)
-    {
-        if (_isGrubing == false && ResourceCount > 0)
-        {
-            StartCoroutine(Grub());
-        }
-    }
-
-    private IEnumerator Grub()
+    private IEnumerator Scan()
     {
         _isGrubing = true;
 
         while (_isGrubing)
         {
             if (TryGetUnit(out Unit unit))
+            {
                 if (_resourcePool.TrySelectResource(out Resource resource))
+                {
                     unit.StartGrub(resource);
+                }
+            }
 
             yield return _wait;
         }

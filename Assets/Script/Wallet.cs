@@ -5,9 +5,7 @@ public class Wallet : MonoBehaviour
 {
     [SerializeField] private ResourcePool _resourcePool;
 
-    private int _goldCount = 0;
-
-    public int GetGoldCount => _goldCount;
+    public int GoldCount { get; private set; }
 
     public event Action ScoreChanged;
 
@@ -21,9 +19,15 @@ public class Wallet : MonoBehaviour
         _resourcePool.ResourceCollected -= CollectResource;
     }
 
+    public void DecreaseResources(int price)
+    {
+        GoldCount -= price;
+
+        ScoreChanged?.Invoke();
+    }
     private void CollectResource()
     {
-        _goldCount += 1;
+        GoldCount += 1;
 
         ScoreChanged?.Invoke();
     }

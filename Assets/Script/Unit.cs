@@ -29,7 +29,7 @@ public class Unit : MonoBehaviour
     }
 
     public void StartGrub(Resource resource)
-    {
+    {       
         resource.ChangeGrubBool();
         _unitMover.MoveToPoint(resource.transform.position);
         _unitTaker.ChooseTarget(resource);

@@ -1,44 +1,69 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent (typeof(Tracker))]
 public class UnitSpawner : MonoBehaviour
 {
     [SerializeField] private int _unitsCount;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private Unit _unitPrefab;
 
-    private Queue<Transform> _spawnPoints;
     private Tracker _tracker;
 
-    private void Start()
+    private bool IsFull;    
+
+    public Queue<Transform> SpawnPoints { get; private set; }
+
+    private void Awake()
     {
         _tracker = GetComponent<Tracker>();
+    }
 
+    private void Start()
+    {     
         GenerateSpawnPoint();
 
         GenerateUnits();
     }
 
+    public bool TrySpawnUnit()
+    {
+        if (SpawnPoints.Count > 0)
+        {
+            SpawnUnit();
+        }
+
+        return IsFull;
+    }
+
     private void GenerateSpawnPoint()
     {
-        _spawnPoints = new Queue<Transform>();
+        SpawnPoints = new Queue<Transform>();
 
         for (int i = 0; i < _spawnPointsParent.childCount; i++)
         {
-            _spawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
+            SpawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
         }
     }
 
     private void GenerateUnits()
     {
-        int pointsCount = _spawnPoints.Count;
+        int pointsCount = SpawnPoints.Count;
 
         for (int i = 0; i < _unitsCount && i < pointsCount; i++)
         {
-            Unit unit = Instantiate(_unitPrefab, _spawnPoints.
-                Dequeue().transform.position, Quaternion.identity, transform);
-
-            _tracker.TakeUnit(unit);
+            SpawnUnit();
         }
+    }
+
+    private void SpawnUnit()
+    {
+        Unit unit = Instantiate(_unitPrefab, SpawnPoints.
+                  Dequeue().transform.position, Quaternion.identity, transform);
+
+        _tracker.TakeUnit(unit);
+
+        if (SpawnPoints.Count == 0)
+            IsFull = true;
     }
 }
