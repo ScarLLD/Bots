@@ -8,27 +8,20 @@ public class UnitsBuyer : MonoBehaviour
     [SerializeField] private Button _actionButton;
     [SerializeField] private UnitSpawner _unitSpawner;
 
-    private BaseCollector _baseCollector;
     private Wallet _wallet;
 
     public bool IsFull { get; private set; } = false;
-
-    private void Awake()
-    {
-        _baseCollector = transform.parent.GetComponent<BaseCollector>();
-
-        _wallet = _baseCollector.GetWallet;
-    }
+    public Button GetButton => _actionButton;
 
     private void OnEnable()
     {
-        _wallet.ScoreChanged += ShowButton;
+        _wallet.ScoreChanged += ShowInteractable;
         _actionButton.onClick.AddListener(OnButtonClick);
     }
 
     private void OnDisable()
     {
-        _wallet.ScoreChanged -= ShowButton;
+        _wallet.ScoreChanged -= ShowInteractable;
         _actionButton.onClick.RemoveListener(OnButtonClick);
 
     }
@@ -43,12 +36,21 @@ public class UnitsBuyer : MonoBehaviour
         _wallet.DecreaseResources(_unitPrice);
     }
 
-    private void ShowButton()
+    public void ShowInteractable()
     {
-        if (_canvasGroup.alpha > 0 && _wallet.GoldCount >= _unitPrice)
+        if (_wallet.GoldCount >= _unitPrice)
             _actionButton.interactable = true;
         else
             _actionButton.interactable = false;
+
+    }
+
+    public void ShowButton()
+    {
+        if (IsFull == false)
+            _canvasGroup.alpha = 1;
+        else
+            _canvasGroup.alpha = 0;
     }
 
     private void OnButtonClick()

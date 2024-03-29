@@ -175,6 +175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tracker: {fileID: 4675549241834416268}
+  _baseButton: {fileID: 7233125215591926276}
 --- !u!114 &8216535966579984135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,7 +407,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5247306920173602721}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -601,7 +602,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unitsBuyer: {fileID: 8216535966579984135}
-  _actionButton: {fileID: 5701416461243903090}
 --- !u!1 &6062668210265812429
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,32 +1,63 @@
-using System.Collections.Generic;
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
-using System.Linq;
 
 public class BaseBuilder : MonoBehaviour
 {
-    [SerializeField] private List<BaseButton> _actionButtons;
+    [SerializeField] private int _basePrice;
+    [SerializeField] private GameObject _flagPrefab;
+    [SerializeField] private Base _basePrefab;
+    [SerializeField] private Wallet _wallet;
+    [SerializeField] private Camera _camera;
 
-    private void Awake()
+    private bool isBuilding = false;
+
+    public void Interect()
     {
-        _actionButtons = new List<BaseButton>();
+        ShowTemplate();
     }
 
-    public void Init(BaseButton button)
+    private void ShowTemplate()
     {
-        _actionButtons.Add(button);
-
-        button.ButtonClicked += Interect;
+        StartCoroutine(RenderTemplate());
     }
 
-    private void Interect()
+    private void BuildBase(Vector3 position)
     {
-
+        if (_wallet.GoldCount >= _basePrice)
+        {
+            Instantiate(_basePrefab, position, Quaternion.identity, transform);
+            _wallet.DecreaseResources(_basePrice);
+        }
     }
 
-    private void OnDisable()
+    private IEnumerator RenderTemplate()
     {
-        _actionButtons.Select(button => { button.ButtonClicked -= Interect; return button; });
+        isBuilding = true;
 
-        //«¿ƒ¿¬¿“‹ ›“” ¡¿«”  ¿∆ƒŒ…  ÕŒœ ≈ ¿ Õ≈ Â‚ÂÌÚ
+        GameObject flag = Instantiate(_flagPrefab);
+
+        while (isBuilding)
+        {
+            RaycastHit hit;
+            Ray ray = (_camera.ScreenPointToRay(Input.mousePosition));
+
+            Debug.DrawRay(ray.origin, ray.direction);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log("collider ray");
+
+                flag.transform.position = hit.point + new Vector3(0, 0, 1);
+
+                if (Input.GetMouseButtonDown(0) == true)
+                {
+                    BuildBase(hit.transform.position);
+                    isBuilding = false;
+                }
+            }
+
+            yield return null;
+        }
     }
 }
