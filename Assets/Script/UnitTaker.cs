@@ -34,17 +34,17 @@ public class UnitTaker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out Resource gold))
+        if (other.GetComponent<Base>())
+        {
+            _isBase = true;
+        }
+        else if (other.TryGetComponent(out Resource gold))
         {
             if (gold == _targetResource)
             {
                 _isGold = true;
                 _tempResource = gold;
             }
-        }
-        else if (other.gameObject.GetComponent<Base>())
-        {
-            _isBase = true;
         }
     }
 

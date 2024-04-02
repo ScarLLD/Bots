@@ -12,10 +12,15 @@ public class BaseBuilder : MonoBehaviour
     [SerializeField] private Wallet _wallet;
     [SerializeField] private LayerMask _hitMask;
 
-    private Coroutine _templateCoroutine;
+    private BaseCollector _baseCollector;
     private Collider[] _colliders;
-    private bool _isBuildingTemplate = false;
+    private Flag _tempflag;
+    private bool _isWork;
 
+    private void Awake()
+    {
+        _baseCollector = GetComponent<BaseCollector>();
+    }
 
     public void Interect()
     {
@@ -24,53 +29,64 @@ public class BaseBuilder : MonoBehaviour
 
     private void ShowTemplate()
     {
-        if (_templateCoroutine == null)
-            _templateCoroutine = StartCoroutine(RenderTemplate());
+        if (_isWork == false)
+            StartCoroutine(RenderTemplate());
     }
 
-    private void BuildBase(Vector3 position)
+    private void BuildBase(Vector3 tempPosition)
     {
+        float positionY = _baseCollector.GetStartPosition.y;
+
         if (_wallet.GoldCount >= _basePrice)
         {
-            Instantiate(_basePrefab, position, Quaternion.identity, transform);
+            Instantiate(_basePrefab, new Vector3(tempPosition.x, positionY, tempPosition.z),
+                Quaternion.identity, transform);
             _wallet.DecreaseResources(_basePrice);
         }
     }
 
     private IEnumerator RenderTemplate()
     {
-        _isBuildingTemplate = true;
+        _isWork = true;
 
         Flag flag = Instantiate(_flagPrefab);
 
-        RaycastHit hit;
         Ray ray;
 
-        while (_isBuildingTemplate)
+        while (_isWork)
         {
             ray = (_camera.ScreenPointToRay(Input.mousePosition));
 
             Debug.DrawRay(ray.origin, ray.direction * 100);
 
-            if (Physics.Raycast(ray, out hit, 100f, _hitMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, 100f, _hitMask))
             {
                 flag.transform.position = hit.point + new Vector3(0, 0.1f, 0);
 
                 _colliders = Physics.OverlapBox(flag.transform.position, flag.transform.localScale * 6, Quaternion.identity);
 
                 if (_colliders.All(collider => collider.GetComponent<LevelPlane>()))
-                    flag. .SetActive(true);
+                    flag.gameObject.SetActive(true);
                 else
                     flag.gameObject.SetActive(false);
 
                 if (Input.GetMouseButtonDown(0) == true && flag.gameObject.activeInHierarchy == true)
                 {
-                    BuildBase(hit.transform.position);
-                    _isBuildingTemplate = false;
+                    if (_tempflag != null)
+                        _tempflag.transform.position = flag.transform.position;
+                    else
+                        _tempflag = Instantiate(_flagPrefab, flag.transform.position, flag.transform.rotation);
+
+                    //BuildBase(_tempflag.transform.position);
+                    _isWork = false;
                 }
             }
 
             yield return null;
         }
+
+        Destroy(flag.gameObject);
+
+        Debug.Log("FlagState");
     }
 }
