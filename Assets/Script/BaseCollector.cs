@@ -5,14 +5,35 @@ public class BaseCollector : MonoBehaviour
     [SerializeField] private ResourcePool _resourcePool;
     [SerializeField] private Wallet _wallet;
     [SerializeField] private Base _basePrefab;
-    [SerializeField] private Vector3 _startPosition;
 
-    public Vector3 GetStartPosition => _startPosition;
+    private BaseBuilder _baseBuilder;
+
     public Wallet GetWallet => _wallet;
     public ResourcePool GetResourcePool => _resourcePool;
 
     private void Awake()
     {
-        Instantiate(_basePrefab, _startPosition, Quaternion.identity, transform);
+        _baseBuilder = GetComponent<BaseBuilder>();
+    }
+
+    private void Start()
+    {
+        Instantiate(_basePrefab, transform);
+    }
+
+    private void OnEnable()
+    {
+        _baseBuilder.FlagInstalled += SendRequest;
+    }
+
+    private void OnDisable()
+    {
+        _baseBuilder.FlagInstalled -= SendRequest;
+    }
+
+    private void SendRequest(Base tempBase, Flag flag)
+    {
+        tempBase.ChangeFlag(flag);
+        tempBase.SendUnit();
     }
 }

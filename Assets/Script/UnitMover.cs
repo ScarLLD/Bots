@@ -5,8 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(UnitTaker))]
 public class UnitMover : MonoBehaviour
 {
+    public Vector3 StartPosition { get; private set; }
+
     private UnitTaker _unitTaker;
-    private Vector3 _startPosition;
     private bool _isMove = false;
     private float _speed;
 
@@ -14,7 +15,7 @@ public class UnitMover : MonoBehaviour
 
     private void Awake()
     {
-        _startPosition = transform.position;
+        StartPosition = transform.position;
         _unitTaker = GetComponent<UnitTaker>();
         _speed = transform.parent.GetComponent<Tracker>().GetSpeed;
     }
@@ -36,7 +37,7 @@ public class UnitMover : MonoBehaviour
 
     private void MoveBack()
     {
-        MoveToPoint(_startPosition);
+        MoveToPoint(StartPosition);
     }
 
     private IEnumerator Move(Vector3 targetPosition)
@@ -50,8 +51,8 @@ public class UnitMover : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position,
                 targetPosition, Time.deltaTime * _speed);
 
-            if (transform.position == targetPosition)            
-                _isMove = false; 
+            if (transform.position == targetPosition)
+                _isMove = false;
 
             yield return null;
         }

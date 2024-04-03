@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(UnitMover))]
 [RequireComponent(typeof(UnitTaker))]
 public class Unit : MonoBehaviour
@@ -33,6 +32,11 @@ public class Unit : MonoBehaviour
         resource.ChangeGrubBool();
         _unitMover.MoveToPoint(resource.transform.position);
         _unitTaker.ChooseTarget(resource);
+    }
+
+    public void ComeFlag(Flag flag)
+    {
+        _unitMover.MoveToPoint(flag.transform.position);
     }
 
     private void ConfirmDelivery(Resource gold)

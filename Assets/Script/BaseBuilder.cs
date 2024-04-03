@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -10,42 +11,39 @@ public class BaseBuilder : MonoBehaviour
     [SerializeField] private Base _basePrefab;
     [SerializeField] private Camera _camera;
     [SerializeField] private Wallet _wallet;
+    [SerializeField] private int _rayDirection;
     [SerializeField] private LayerMask _hitMask;
 
+    private Vector3 _positionMultiple = new Vector3(0, 0.01f, 0);
+    private Base _tempBase;
     private BaseCollector _baseCollector;
     private Collider[] _colliders;
     private Flag _tempflag;
     private bool _isWork;
+
+    public event Action<Base> FlagInstalled;
 
     private void Awake()
     {
         _baseCollector = GetComponent<BaseCollector>();
     }
 
-    public void Interect()
-    {
-        ShowTemplate();
-    }
-
-    private void ShowTemplate()
+    public void ShowTemplate(Base tempBase)
     {
         if (_isWork == false)
-            StartCoroutine(RenderTemplate());
+            StartCoroutine(RenderTemplate(tempBase));
     }
 
     private void BuildBase(Vector3 tempPosition)
     {
-        float positionY = _baseCollector.GetStartPosition.y;
-
         if (_wallet.GoldCount >= _basePrice)
         {
-            Instantiate(_basePrefab, new Vector3(tempPosition.x, positionY, tempPosition.z),
-                Quaternion.identity, transform);
+            Instantiate(_basePrefab, tempPosition, Quaternion.identity, transform);
             _wallet.DecreaseResources(_basePrice);
         }
     }
 
-    private IEnumerator RenderTemplate()
+    private IEnumerator RenderTemplate(Base tempBase)
     {
         _isWork = true;
 
@@ -57,11 +55,11 @@ public class BaseBuilder : MonoBehaviour
         {
             ray = (_camera.ScreenPointToRay(Input.mousePosition));
 
-            Debug.DrawRay(ray.origin, ray.direction * 100);
+            Debug.DrawRay(ray.origin, ray.direction * _rayDirection);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, _hitMask))
+            if (Physics.Raycast(ray, out RaycastHit hit, _rayDirection, _hitMask))
             {
-                flag.transform.position = hit.point + new Vector3(0, 0.1f, 0);
+                flag.transform.position = new Vector3(hit.point.x, tempBase.transform.position.y, hit.point.z);
 
                 _colliders = Physics.OverlapBox(flag.transform.position, flag.transform.localScale * 6, Quaternion.identity);
 
@@ -77,7 +75,8 @@ public class BaseBuilder : MonoBehaviour
                     else
                         _tempflag = Instantiate(_flagPrefab, flag.transform.position, flag.transform.rotation);
 
-                    //BuildBase(_tempflag.transform.position);
+                    FlagInstalled?.Invoke(tempBase);
+
                     _isWork = false;
                 }
             }

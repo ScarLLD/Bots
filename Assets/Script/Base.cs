@@ -10,6 +10,7 @@ public class Base : MonoBehaviour
     private BaseCollector _baseCollector;
     private BaseBuilder _baseBuilder;
     private BuyUnitButtonView _buyUnitButtonView;
+    private Flag _flag;
 
     private void Awake()
     {
@@ -21,5 +22,15 @@ public class Base : MonoBehaviour
         _unitsBuyer.Init(_baseCollector.GetWallet);
         _tracker.Init(_baseCollector.GetResourcePool);
         _baseButton.Init(_baseBuilder, _buyUnitButtonView);
+    }
+
+    public void SendUnit()
+    {
+        _tracker.
+    }
+
+    public void ChangeFlag(Flag flag)
+    {
+        _flag = flag;
     }
 }

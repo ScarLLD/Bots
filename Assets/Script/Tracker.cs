@@ -47,6 +47,11 @@ public class Tracker : MonoBehaviour
         _units.Add(unit);
     }
 
+    public void SendUnit()
+    {
+        _units[Random.Range(0, _units.Count)].St
+    }
+
     private IEnumerator Scan()
     {
         _isGrubing = true;

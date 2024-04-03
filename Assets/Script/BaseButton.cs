@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class BaseButton : MonoBehaviour
 {
+    [SerializeField] private Base _base;
     [SerializeField] private UnitsBuyer _unitsBuyer;
 
     private Button _actionButton;
@@ -33,6 +34,6 @@ public class BaseButton : MonoBehaviour
     private void OnButtonClick()
     {
         _unitButtonView.ShowButton(_unitsBuyer);
-        _baseBuilder.Interect();
+        _baseBuilder.ShowTemplate(_base);
     }
 }
