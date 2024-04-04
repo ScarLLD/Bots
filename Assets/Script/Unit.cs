@@ -8,7 +8,7 @@ public class Unit : MonoBehaviour
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
 
-    public Resource GetTargetResource => _unitTaker.GetTargetResource;
+    public bool IsBusy { get; private set; }
 
     private void Awake()
     {
@@ -28,19 +28,25 @@ public class Unit : MonoBehaviour
     }
 
     public void StartGrub(Resource resource)
-    {       
+    {
         resource.ChangeGrubBool();
         _unitMover.MoveToPoint(resource.transform.position);
         _unitTaker.ChooseTarget(resource);
+
+        IsBusy = true;
     }
 
     public void ComeFlag(Flag flag)
     {
         _unitMover.MoveToPoint(flag.transform.position);
+
+        IsBusy = true;
     }
 
     private void ConfirmDelivery(Resource gold)
     {
         _unitsTracker.ConfirmDelivery(gold);
+
+        IsBusy = true;
     }
 }

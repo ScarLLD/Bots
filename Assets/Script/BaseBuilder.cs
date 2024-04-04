@@ -21,7 +21,9 @@ public class BaseBuilder : MonoBehaviour
     private Flag _tempflag;
     private bool _isWork;
 
-    public event Action<Base> FlagInstalled;
+    public event Action<Base, Flag> FlagInstalled;
+
+    public int GetBasePrice => _basePrice;
 
     private void Awake()
     {
@@ -34,13 +36,12 @@ public class BaseBuilder : MonoBehaviour
             StartCoroutine(RenderTemplate(tempBase));
     }
 
-    private void BuildBase(Vector3 tempPosition)
+    public void BuildBase(Vector3 tempPosition, Unit unit)
     {
-        if (_wallet.GoldCount >= _basePrice)
-        {
-            Instantiate(_basePrefab, tempPosition, Quaternion.identity, transform);
-            _wallet.DecreaseResources(_basePrice);
-        }
+        Base tempBase = Instantiate(_basePrefab, tempPosition, Quaternion.identity, transform);
+        tempBase.
+
+        _wallet.DecreaseResources(_basePrice);
     }
 
     private IEnumerator RenderTemplate(Base tempBase)
@@ -75,7 +76,7 @@ public class BaseBuilder : MonoBehaviour
                     else
                         _tempflag = Instantiate(_flagPrefab, flag.transform.position, flag.transform.rotation);
 
-                    FlagInstalled?.Invoke(tempBase);
+                    FlagInstalled?.Invoke(tempBase, _tempflag);
 
                     _isWork = false;
                 }
@@ -85,7 +86,5 @@ public class BaseBuilder : MonoBehaviour
         }
 
         Destroy(flag.gameObject);
-
-        Debug.Log("FlagState");
     }
 }

@@ -2,24 +2,26 @@
 using UnityEngine;
 
 [RequireComponent(typeof(UnitMover))]
+[RequireComponent(typeof(Unit))]
 public class UnitTaker : MonoBehaviour
 {
     [SerializeField] private Vector3 _objectPosition;
 
     private UnitMover _unitMover;
+    private Unit _unit;
     private Resource _targetResource;
     private Resource _tempResource;
     private bool _isBase = false;
     private bool _isGold = false;
+    private bool _isFlag = false;
 
     public event Action Taken;
     public event Action<Resource> Delivered;
 
-    public Resource GetTargetResource => _targetResource;
-
     private void Awake()
     {
         _unitMover = GetComponent<UnitMover>();
+        _unit = GetComponent<Unit>();
     }
 
     private void OnEnable()
@@ -46,12 +48,17 @@ public class UnitTaker : MonoBehaviour
                 _tempResource = gold;
             }
         }
+        else if (other.GetComponent<Flag>())
+        {
+            _isFlag = true;
+        }
     }
 
     private void OnTriggerExit()
     {
         _isGold = false;
         _isBase = false;
+        _isFlag = false;
     }
 
     public void ChooseTarget(Resource resource)
@@ -63,10 +70,11 @@ public class UnitTaker : MonoBehaviour
     {
         if (_isBase && _tempResource != null)
         {
-            Delivered?.Invoke(_tempResource);
-
-            _tempResource = null;
-            _targetResource = null;
+            PutGold();
+        }
+        else if (_isFlag)
+        {
+            _isFlag
         }
         else if (_isGold)
         {
@@ -80,5 +88,13 @@ public class UnitTaker : MonoBehaviour
         _tempResource.transform.localPosition = _objectPosition;
 
         Taken?.Invoke();
+    }
+
+    private void PutGold()
+    {
+        Delivered?.Invoke(_tempResource);
+
+        _tempResource = null;
+        _targetResource = null;
     }
 }

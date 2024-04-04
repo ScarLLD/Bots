@@ -373,7 +373,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 896ab27b7e731a446a59c19966267918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _basePrice: 2
+  _basePrice: 5
   _flagPrefab: {fileID: 9165731394100491073, guid: b2a1d3f436b4eb241957f83ee8a4e95f, type: 3}
   _basePrefab: {fileID: 2620816115667946403, guid: cadaab0216d81ef4e8a08e3765a7a87e, type: 3}
   _camera: {fileID: 963194227}

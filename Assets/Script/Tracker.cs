@@ -16,7 +16,7 @@ public class Tracker : MonoBehaviour
     public float GetSpeed => _speed;
 
     private void Awake()
-    {        
+    {
         _units = new List<Unit>();
         _wait = new WaitForSeconds(_timeBetwenGrub);
     }
@@ -27,13 +27,13 @@ public class Tracker : MonoBehaviour
     }
 
     public void Init(ResourcePool resourcePool)
-    {        
+    {
         _resourcePool = resourcePool;
     }
 
     public bool TryGetUnit(out Unit unit)
     {
-        unit = _units.FirstOrDefault(unit => unit.GetTargetResource == null);
+        unit = _units.FirstOrDefault(unit => unit.IsBusy == false);
         return unit != null;
     }
 
@@ -45,11 +45,6 @@ public class Tracker : MonoBehaviour
     public void TakeUnit(Unit unit)
     {
         _units.Add(unit);
-    }
-
-    public void SendUnit()
-    {
-        _units[Random.Range(0, _units.Count)].St
     }
 
     private IEnumerator Scan()

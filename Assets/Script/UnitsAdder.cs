@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UnitsBuyer : MonoBehaviour
+public class UnitsAdder : MonoBehaviour
 {
     [SerializeField] private int _unitPrice;
     [SerializeField] private CanvasGroup _canvasGroup;
@@ -55,7 +55,7 @@ public class UnitsBuyer : MonoBehaviour
 
     private void OnButtonClick()
     {
-        IsFull = _unitSpawner.TrySpawnUnit();
+        _unitSpawner.SpawnUnit();
 
         if (IsFull == false)
             BuyUnit();

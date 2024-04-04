@@ -33,7 +33,6 @@ public class BaseCollector : MonoBehaviour
 
     private void SendRequest(Base tempBase, Flag flag)
     {
-        tempBase.ChangeFlag(flag);
-        tempBase.SendUnit();
+        tempBase.WaitRequire(flag);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class BaseButton : MonoBehaviour
 {
     [SerializeField] private Base _base;
-    [SerializeField] private UnitsBuyer _unitsBuyer;
+    [SerializeField] private UnitsAdder _unitsBuyer;
 
     private Button _actionButton;
     private BaseBuilder _baseBuilder;
