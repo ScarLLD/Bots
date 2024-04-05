@@ -11,8 +11,6 @@ public class UnitMover : MonoBehaviour
     private bool _isMove = false;
     private float _speed;
 
-    public event Action Arrived;
-
     private void Awake()
     {
         StartPosition = transform.position;
@@ -20,24 +18,19 @@ public class UnitMover : MonoBehaviour
         _speed = transform.parent.GetComponent<Tracker>().GetSpeed;
     }
 
-    private void OnEnable()
-    {
-        _unitTaker.Taken += MoveBack;
-    }
-
-    private void OnDisable()
-    {
-        _unitTaker.Taken -= MoveBack;
-    }
-
     public void MoveToPoint(Vector3 targetPosition)
     {
         StartCoroutine(Move(targetPosition));
     }
 
-    private void MoveBack()
+    public void MoveBack()
     {
         MoveToPoint(StartPosition);
+    }
+
+    public void ChangeStartPosition(Vector3 startPosition)
+    {
+        StartPosition = startPosition;
     }
 
     private IEnumerator Move(Vector3 targetPosition)
@@ -57,6 +50,6 @@ public class UnitMover : MonoBehaviour
             yield return null;
         }
 
-        Arrived?.Invoke();
+        _unitTaker.Interact();
     }
 }

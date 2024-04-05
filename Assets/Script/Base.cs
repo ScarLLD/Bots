@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(UnitsAdder))]
 public class Base : MonoBehaviour
 {
+    [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Tracker _tracker;
     [SerializeField] private BaseButton _baseButton;
 
@@ -32,6 +33,11 @@ public class Base : MonoBehaviour
     {
         _flag = flag;
         _sendCoroutine ??= StartCoroutine(Wait());
+    }
+
+    public void TakeUnit(Unit unit)
+    {
+        _unitSpawner.TakeUnit(unit);
     }
 
     private IEnumerator Wait()

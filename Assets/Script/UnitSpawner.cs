@@ -10,21 +10,19 @@ public class UnitSpawner : MonoBehaviour
 
     private Tracker _tracker;
 
-    public bool IsFull { get; private set; } = false;
-
     public Queue<Transform> SpawnPoints { get; private set; }
 
     private void Awake()
     {
         _tracker = GetComponent<Tracker>();
+
+        GenerateSpawnPoint();
     }
 
     private void Start()
-    {
-        GenerateSpawnPoint();
-
+    {      
         GenerateUnits();
-    }       
+    }
 
     private void GenerateSpawnPoint()
     {
@@ -51,14 +49,14 @@ public class UnitSpawner : MonoBehaviour
         Unit unit = Instantiate(_unitPrefab, SpawnPoints.
                   Dequeue().transform.position, Quaternion.identity, transform);
 
-        _tracker.TakeUnit(unit);
-
-        if (SpawnPoints.Count == 0)
-            IsFull = true;
+        _tracker.TakeUnit(unit);        
     }
 
     public void TakeUnit(Unit unit)
     {
-        _uni
+        unit.transform.parent = transform;
+        unit.ChangeBase(SpawnPoints.Dequeue().position);
+
+        _tracker.TakeUnit(unit);
     }
 }

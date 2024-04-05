@@ -9,29 +9,17 @@ public class UnitTaker : MonoBehaviour
 
     private UnitMover _unitMover;
     private Unit _unit;
+    private Flag _tempFlag;
     private Resource _targetResource;
     private Resource _tempResource;
     private bool _isBase = false;
     private bool _isGold = false;
     private bool _isFlag = false;
 
-    public event Action Taken;
-    public event Action<Resource> Delivered;
-
     private void Awake()
     {
         _unitMover = GetComponent<UnitMover>();
         _unit = GetComponent<Unit>();
-    }
-
-    private void OnEnable()
-    {
-        _unitMover.Arrived += Interact;
-    }
-
-    private void OnDisable()
-    {
-        _unitMover.Arrived -= Interact;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -48,8 +36,9 @@ public class UnitTaker : MonoBehaviour
                 _tempResource = gold;
             }
         }
-        else if (other.GetComponent<Flag>())
+        else if (other.TryGetComponent<Flag>(out Flag flag))
         {
+            _tempFlag = flag;
             _isFlag = true;
         }
     }
@@ -66,7 +55,7 @@ public class UnitTaker : MonoBehaviour
         _targetResource = resource;
     }
 
-    private void Interact()
+    public void Interact()
     {
         if (_isBase && _tempResource != null)
         {
@@ -74,7 +63,7 @@ public class UnitTaker : MonoBehaviour
         }
         else if (_isFlag)
         {
-            _isFlag
+            BuildBase();
         }
         else if (_isGold)
         {
@@ -87,14 +76,19 @@ public class UnitTaker : MonoBehaviour
         _tempResource.transform.parent = transform;
         _tempResource.transform.localPosition = _objectPosition;
 
-        Taken?.Invoke();
+        _unitMover.MoveBack();
     }
 
     private void PutGold()
     {
-        Delivered?.Invoke(_tempResource);
+        _unit.ConfirmDelivery(_tempResource);
 
         _tempResource = null;
         _targetResource = null;
+    }
+
+    private void BuildBase()
+    {
+        _tempFlag.SpawnBase(_unit);
     }
 }

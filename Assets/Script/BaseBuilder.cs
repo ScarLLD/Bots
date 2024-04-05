@@ -14,14 +14,10 @@ public class BaseBuilder : MonoBehaviour
     [SerializeField] private int _rayDirection;
     [SerializeField] private LayerMask _hitMask;
 
-    private Vector3 _positionMultiple = new Vector3(0, 0.01f, 0);
-    private Base _tempBase;
     private BaseCollector _baseCollector;
     private Collider[] _colliders;
     private Flag _tempflag;
     private bool _isWork;
-
-    public event Action<Base, Flag> FlagInstalled;
 
     public int GetBasePrice => _basePrice;
 
@@ -33,30 +29,46 @@ public class BaseBuilder : MonoBehaviour
     public void ShowTemplate(Base tempBase)
     {
         if (_isWork == false)
-            StartCoroutine(RenderTemplate(tempBase));
+            StartCoroutine(Show(tempBase));
     }
 
     public void BuildBase(Vector3 tempPosition, Unit unit)
     {
         Base tempBase = Instantiate(_basePrefab, tempPosition, Quaternion.identity, transform);
-        tempBase.
+        tempBase.TakeUnit(unit);
+
 
         _wallet.DecreaseResources(_basePrice);
     }
 
-    private IEnumerator RenderTemplate(Base tempBase)
+    private void SetTemplate(Flag flag)
+    {
+        if (_tempflag != null)
+        {
+            _tempflag.transform.position = flag.transform.position;
+
+        }
+        else
+        {
+            _tempflag = Instantiate(_flagPrefab, flag.transform.position, flag.transform.rotation, transform);
+        }
+    }
+
+    private IEnumerator Show(Base tempBase)
     {
         _isWork = true;
 
-        Flag flag = Instantiate(_flagPrefab);
+        Flag flag = Instantiate(_flagPrefab, transform);
+
+        BoxCollider flagCollider = flag.GetComponent<BoxCollider>();
+
+        flagCollider.enabled = false;
 
         Ray ray;
 
         while (_isWork)
         {
             ray = (_camera.ScreenPointToRay(Input.mousePosition));
-
-            Debug.DrawRay(ray.origin, ray.direction * _rayDirection);
 
             if (Physics.Raycast(ray, out RaycastHit hit, _rayDirection, _hitMask))
             {
@@ -71,12 +83,11 @@ public class BaseBuilder : MonoBehaviour
 
                 if (Input.GetMouseButtonDown(0) == true && flag.gameObject.activeInHierarchy == true)
                 {
-                    if (_tempflag != null)
-                        _tempflag.transform.position = flag.transform.position;
-                    else
-                        _tempflag = Instantiate(_flagPrefab, flag.transform.position, flag.transform.rotation);
+                    flagCollider.enabled = true;
 
-                    FlagInstalled?.Invoke(tempBase, _tempflag);
+                    SetTemplate(flag);
+
+                    tempBase.WaitRequire(_tempflag);
 
                     _isWork = false;
                 }

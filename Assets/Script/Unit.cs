@@ -17,16 +17,6 @@ public class Unit : MonoBehaviour
         _unitTaker = GetComponent<UnitTaker>();
     }
 
-    private void OnEnable()
-    {
-        _unitTaker.Delivered += ConfirmDelivery;
-    }
-
-    private void OnDisable()
-    {
-        _unitTaker.Delivered -= ConfirmDelivery;
-    }
-
     public void StartGrub(Resource resource)
     {
         resource.ChangeGrubBool();
@@ -38,15 +28,22 @@ public class Unit : MonoBehaviour
 
     public void ComeFlag(Flag flag)
     {
-        _unitMover.MoveToPoint(flag.transform.position);
+        _unitMover.MoveToPoint(flag.GetStartPosition.transform.position);
 
         IsBusy = true;
     }
 
-    private void ConfirmDelivery(Resource gold)
+    public void ConfirmDelivery(Resource gold)
     {
         _unitsTracker.ConfirmDelivery(gold);
 
-        IsBusy = true;
+        IsBusy = false;
+    }
+
+    public void ChangeBase(Vector3 startPosition)
+    {
+        _unitMover.ChangeStartPosition(startPosition);
+
+        IsBusy = false;
     }
 }
