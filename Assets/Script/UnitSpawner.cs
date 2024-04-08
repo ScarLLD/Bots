@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class UnitSpawner : MonoBehaviour
 
     public Queue<Transform> SpawnPoints { get; private set; }
 
+    public bool IsFull { get; private set; } = false;
+
     private void Awake()
     {
         _tracker = GetComponent<Tracker>();
@@ -20,9 +23,11 @@ public class UnitSpawner : MonoBehaviour
     }
 
     private void Start()
-    {      
+    {
         GenerateUnits();
     }
+
+    public void TakeSpawnPoint(Transform spawnPoint) => SpawnPoints.Enqueue(spawnPoint);
 
     private void GenerateSpawnPoint()
     {
@@ -36,9 +41,7 @@ public class UnitSpawner : MonoBehaviour
 
     private void GenerateUnits()
     {
-        int pointsCount = SpawnPoints.Count;
-
-        for (int i = 0; i < _startUnitsCount && i < pointsCount; i++)
+        for (int i = 0; i < _startUnitsCount && SpawnPoints.Count > 0; i++)
         {
             SpawnUnit();
         }
@@ -49,7 +52,7 @@ public class UnitSpawner : MonoBehaviour
         Unit unit = Instantiate(_unitPrefab, SpawnPoints.
                   Dequeue().transform.position, Quaternion.identity, transform);
 
-        _tracker.TakeUnit(unit);        
+        _tracker.TakeUnit(unit);
     }
 
     public void TakeUnit(Unit unit)

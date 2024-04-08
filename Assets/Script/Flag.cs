@@ -4,14 +4,14 @@ public class Flag : MonoBehaviour
 {
     [SerializeField] private Transform _startPosition;
 
-    private BaseBuilder _baseBuilder;
+    private BaseCollector _baseCollector;
     private Unit _unit;
 
     public Transform GetStartPosition => _startPosition;
 
     private void Awake()
     {
-        _baseBuilder = transform.parent.GetComponent<BaseBuilder>();
+        _baseCollector = transform.parent.GetComponent<BaseCollector>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,7 +24,7 @@ public class Flag : MonoBehaviour
     {
         if (_unit == unit)
         {
-            _baseBuilder.BuildBase(transform.position, unit);
+            _baseCollector.GenerateBase();
 
             Destroy(transform.gameObject);
         }

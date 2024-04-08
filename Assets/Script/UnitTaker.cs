@@ -52,6 +52,7 @@ public class UnitTaker : MonoBehaviour
 
     public void ChooseTarget(Resource resource)
     {
+        resource.ChangeGrubBool();
         _targetResource = resource;
     }
 

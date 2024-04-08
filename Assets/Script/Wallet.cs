@@ -25,6 +25,7 @@ public class Wallet : MonoBehaviour
 
         ScoreChanged?.Invoke();
     }
+
     private void CollectResource()
     {
         GoldCount += 1;

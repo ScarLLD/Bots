@@ -8,12 +8,14 @@ public class Tracker : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _timeBetwenGrub;
 
-    private ResourcePool _resourcePool;
     private List<Unit> _units;
+    private Flag _flag;
+    private ResourcePool _resourcePool;
     private WaitForSeconds _wait;
-    private bool _isGrubing = false;
+    private bool _isInterecting = false;
 
     public float GetSpeed => _speed;
+    public int GetUnitsCount => _units.Count;
 
     private void Awake()
     {
@@ -42,20 +44,27 @@ public class Tracker : MonoBehaviour
         _resourcePool.CollectResource(resource);
     }
 
-    public void TakeUnit(Unit unit)
+    public void TakeUnit(Unit unit) => _units.Add(unit);
+
+    public void TakeFlag(Flag flag)
     {
-        _units.Add(unit);
+        _flag = flag;
     }
 
     private IEnumerator Scan()
     {
-        _isGrubing = true;
+        _isInterecting = true;
 
-        while (_isGrubing)
+        while (_isInterecting)
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_resourcePool.TrySelectResource(out Resource resource))
+                if (_flag != null && _units.Count > 1)
+                {
+                    unit.ComeFlag(_flag);
+                    _flag = null;
+                }
+                else if (_resourcePool.TrySelectResource(out Resource resource))
                 {
                     unit.StartGrub(resource);
                 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(BaseCollector))]
 public class BaseBuilder : MonoBehaviour
 {
-    [SerializeField] private int _basePrice;
     [SerializeField] private Flag _flagPrefab;
     [SerializeField] private Base _basePrefab;
     [SerializeField] private Camera _camera;
@@ -14,31 +12,21 @@ public class BaseBuilder : MonoBehaviour
     [SerializeField] private int _rayDirection;
     [SerializeField] private LayerMask _hitMask;
 
-    private BaseCollector _baseCollector;
+    private Ray _ray;
     private Collider[] _colliders;
     private Flag _tempflag;
     private bool _isWork;
 
-    public int GetBasePrice => _basePrice;
+    public Flag GetTempFlag() => _tempflag;
 
-    private void Awake()
+    private void Update()
     {
-        _baseCollector = GetComponent<BaseCollector>();
-    }
+        _ray = _camera.ScreenPointToRay(Input.mousePosition);
 
-    public void ShowTemplate(Base tempBase)
-    {
-        if (_isWork == false)
-            StartCoroutine(Show(tempBase));
-    }
+        if (_isWork == false && Physics.Raycast(_ray, out RaycastHit _hit))
+            if (Input.GetMouseButtonDown(0) && _hit.transform.gameObject.TryGetComponent(out Base tempbase))
+                StartCoroutine(ShowTemplate(tempbase));
 
-    public void BuildBase(Vector3 tempPosition, Unit unit)
-    {
-        Base tempBase = Instantiate(_basePrefab, tempPosition, Quaternion.identity, transform);
-        tempBase.TakeUnit(unit);
-
-
-        _wallet.DecreaseResources(_basePrice);
     }
 
     private void SetTemplate(Flag flag)
@@ -46,7 +34,6 @@ public class BaseBuilder : MonoBehaviour
         if (_tempflag != null)
         {
             _tempflag.transform.position = flag.transform.position;
-
         }
         else
         {
@@ -54,7 +41,7 @@ public class BaseBuilder : MonoBehaviour
         }
     }
 
-    private IEnumerator Show(Base tempBase)
+    private IEnumerator ShowTemplate(Base tempBase)
     {
         _isWork = true;
 
@@ -64,13 +51,9 @@ public class BaseBuilder : MonoBehaviour
 
         flagCollider.enabled = false;
 
-        Ray ray;
-
         while (_isWork)
         {
-            ray = (_camera.ScreenPointToRay(Input.mousePosition));
-
-            if (Physics.Raycast(ray, out RaycastHit hit, _rayDirection, _hitMask))
+            if (Physics.Raycast(_ray, out RaycastHit hit, _rayDirection, _hitMask))
             {
                 flag.transform.position = new Vector3(hit.point.x, tempBase.transform.position.y, hit.point.z);
 
@@ -87,7 +70,7 @@ public class BaseBuilder : MonoBehaviour
 
                     SetTemplate(flag);
 
-                    tempBase.WaitRequire(_tempflag);
+                    tempBase.TakeFlag(_tempflag);
 
                     _isWork = false;
                 }
