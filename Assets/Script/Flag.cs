@@ -24,9 +24,9 @@ public class Flag : MonoBehaviour
     {
         if (_unit == unit)
         {
-            _baseCollector.GenerateBase();
+            _baseCollector.GenerateBase(transform.position, _unit);
 
             Destroy(transform.gameObject);
-        }
+        }        
     }
 }

@@ -8,13 +8,12 @@ public class BaseBuilder : MonoBehaviour
     [SerializeField] private Flag _flagPrefab;
     [SerializeField] private Base _basePrefab;
     [SerializeField] private Camera _camera;
-    [SerializeField] private Wallet _wallet;
     [SerializeField] private int _rayDirection;
     [SerializeField] private LayerMask _hitMask;
 
-    private Ray _ray;
     private Collider[] _colliders;
     private Flag _tempflag;
+    private Ray _ray;
     private bool _isWork;
 
     public Flag GetTempFlag() => _tempflag;
@@ -25,8 +24,8 @@ public class BaseBuilder : MonoBehaviour
 
         if (_isWork == false && Physics.Raycast(_ray, out RaycastHit _hit))
             if (Input.GetMouseButtonDown(0) && _hit.transform.gameObject.TryGetComponent(out Base tempbase))
-                StartCoroutine(ShowTemplate(tempbase));
-
+                if (tempbase.GetUnitsCount > 1)
+                    StartCoroutine(ShowTemplate(tempbase));
     }
 
     private void SetTemplate(Flag flag)
@@ -68,9 +67,9 @@ public class BaseBuilder : MonoBehaviour
                 {
                     flagCollider.enabled = true;
 
-                    SetTemplate(flag);
+                    SetTemplate(flag);                    
 
-                    tempBase.TakeFlag(_tempflag);
+                    tempBase.SendBuildRequest(_tempflag);
 
                     _isWork = false;
                 }

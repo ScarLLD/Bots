@@ -8,10 +8,12 @@ public class Tracker : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _timeBetwenGrub;
 
-    private List<Unit> _units;
-    private Flag _flag;
+    private UnitSpawner _unitSpawner;
     private ResourcePool _resourcePool;
     private WaitForSeconds _wait;
+    private List<Unit> _units;
+    private Base _base;
+    private Flag _flag;
     private bool _isInterecting = false;
 
     public float GetSpeed => _speed;
@@ -19,6 +21,9 @@ public class Tracker : MonoBehaviour
 
     private void Awake()
     {
+        _unitSpawner = GetComponent<UnitSpawner>();
+        _base = transform.parent.GetComponent<Base>();
+
         _units = new List<Unit>();
         _wait = new WaitForSeconds(_timeBetwenGrub);
     }
@@ -33,6 +38,11 @@ public class Tracker : MonoBehaviour
         _resourcePool = resourcePool;
     }
 
+    public void BuildBase(Flag flag, Unit unit)
+    {
+        _base.BuildBase(flag, unit);
+    }
+
     public bool TryGetUnit(out Unit unit)
     {
         unit = _units.FirstOrDefault(unit => unit.IsBusy == false);
@@ -44,7 +54,11 @@ public class Tracker : MonoBehaviour
         _resourcePool.CollectResource(resource);
     }
 
-    public void TakeUnit(Unit unit) => _units.Add(unit);
+    public void TakeUnit(Unit unit)
+    {
+        _units.Add(unit);
+        Debug.Log("Unit added");
+    }
 
     public void TakeFlag(Flag flag)
     {
@@ -59,8 +73,11 @@ public class Tracker : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_flag != null && _units.Count > 1)
+                if (_flag != null && _units.Count > 1 && _base.TryBuyBase)
                 {
+                    _unitSpawner.TakeSpawnPoint(unit.GetStartTransform);
+                    _units.Remove(unit);
+
                     unit.ComeFlag(_flag);
                     _flag = null;
                 }

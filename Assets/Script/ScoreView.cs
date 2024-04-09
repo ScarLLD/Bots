@@ -8,12 +8,12 @@ public class ScoreView : MonoBehaviour
 
     private void OnEnable()
     {
-        _wallet.ScoreChanged += OnScoreChanged;
+        _wallet.ScoreIncreased += OnScoreChanged;
     }
 
     private void OnDisable()
     {
-        _wallet.ScoreChanged -= OnScoreChanged;
+        _wallet.ScoreIncreased -= OnScoreChanged;
     }
 
     private void OnScoreChanged()

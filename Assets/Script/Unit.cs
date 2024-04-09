@@ -8,8 +8,9 @@ public class Unit : MonoBehaviour
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
 
-    public bool IsBusy { get; private set; }
+    public Transform GetStartTransform => _unitMover.GetStartTransfrom;
 
+    public bool IsBusy { get; private set; }
     private void Awake()
     {
         _tracker = transform.parent.GetComponent<Tracker>();
@@ -19,7 +20,7 @@ public class Unit : MonoBehaviour
 
     public void StartGrub(Resource resource)
     {
-        _unitMover.MoveToPoint(resource.transform.position);
+        _unitMover.MoveToPoint(resource.transform);
         _unitTaker.ChooseTarget(resource);
 
         IsBusy = true;
@@ -27,10 +28,14 @@ public class Unit : MonoBehaviour
 
     public void ComeFlag(Flag flag)
     {
-        _unitMover.MoveToPoint(flag.GetStartPosition.transform.position);
-        
+        _unitMover.MoveToPoint(flag.GetStartPosition.transform);
 
         IsBusy = true;
+    }
+
+    public void Init(Transform tempTransform)
+    {
+        _unitMover.ChangeStartPosition(tempTransform);
     }
 
     public void ConfirmDelivery(Resource gold)
@@ -40,9 +45,9 @@ public class Unit : MonoBehaviour
         IsBusy = false;
     }
 
-    public void ChangeBase(Vector3 startPosition)
+    public void ChangeBase(Transform tempTransfrom)
     {
-        _unitMover.ChangeStartPosition(startPosition);
+        _unitMover.ChangeStartPosition(tempTransfrom);
 
         IsBusy = false;
     }

@@ -49,17 +49,19 @@ public class UnitSpawner : MonoBehaviour
 
     public void SpawnUnit()
     {
-        Unit unit = Instantiate(_unitPrefab, SpawnPoints.
-                  Dequeue().transform.position, Quaternion.identity, transform);
+        Transform tempTransform = SpawnPoints.Dequeue();
+
+        Unit unit = Instantiate(_unitPrefab, tempTransform.position, Quaternion.identity, transform);
+        unit.Init(tempTransform);
 
         _tracker.TakeUnit(unit);
     }
 
     public void TakeUnit(Unit unit)
     {
-        unit.transform.parent = transform;
-        unit.ChangeBase(SpawnPoints.Dequeue().position);
-
         _tracker.TakeUnit(unit);
+
+        unit.transform.parent = transform;
+        unit.ChangeBase(SpawnPoints.Dequeue());
     }
 }

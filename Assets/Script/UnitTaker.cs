@@ -7,6 +7,7 @@ public class UnitTaker : MonoBehaviour
 {
     [SerializeField] private Vector3 _objectPosition;
 
+    private Tracker _tracker;
     private UnitMover _unitMover;
     private Unit _unit;
     private Flag _tempFlag;
@@ -18,6 +19,7 @@ public class UnitTaker : MonoBehaviour
 
     private void Awake()
     {
+        _tracker = transform.parent.GetComponent<Tracker>();
         _unitMover = GetComponent<UnitMover>();
         _unit = GetComponent<Unit>();
     }
@@ -90,6 +92,6 @@ public class UnitTaker : MonoBehaviour
 
     private void BuildBase()
     {
-        _tempFlag.SpawnBase(_unit);
+        _tracker.BuildBase(_tempFlag, _unit);
     }
 }

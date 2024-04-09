@@ -1,50 +1,49 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(UnitTaker))]
 public class UnitMover : MonoBehaviour
 {
-    public Vector3 StartPosition { get; private set; }
-
+    private Transform _startTransfrom;
     private UnitTaker _unitTaker;
     private bool _isMove = false;
     private float _speed;
 
+    public Transform GetStartTransfrom => _startTransfrom;
+
     private void Awake()
     {
-        StartPosition = transform.position;
         _unitTaker = GetComponent<UnitTaker>();
         _speed = transform.parent.GetComponent<Tracker>().GetSpeed;
     }
 
-    public void MoveToPoint(Vector3 targetPosition)
+    public void MoveToPoint(Transform target)
     {
-        StartCoroutine(Move(targetPosition));
+        StartCoroutine(Move(target));
     }
 
     public void MoveBack()
     {
-        MoveToPoint(StartPosition);
+        MoveToPoint(_startTransfrom);
     }
 
-    public void ChangeStartPosition(Vector3 startPosition)
+    public void ChangeStartPosition(Transform tempTransform)
     {
-        StartPosition = startPosition;
+        _startTransfrom = tempTransform;
     }
 
-    private IEnumerator Move(Vector3 targetPosition)
+    private IEnumerator Move(Transform target)
     {
         _isMove = true;
 
-        transform.LookAt(targetPosition);
+        transform.LookAt(target);
 
         while (_isMove)
         {
             transform.position = Vector3.MoveTowards(transform.position,
-                targetPosition, Time.deltaTime * _speed);
+                target.position, Time.deltaTime * _speed);
 
-            if (transform.position == targetPosition)
+            if (transform.position == target.position)
                 _isMove = false;
 
             yield return null;
