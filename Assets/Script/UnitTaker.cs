@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(UnitMover))]
 [RequireComponent(typeof(Unit))]
@@ -14,8 +13,6 @@ public class UnitTaker : MonoBehaviour
     private Resource _targetResource;
     private Resource _tempResource;
     private bool _isBase = false;
-    private bool _isGold = false;
-    private bool _isFlag = false;
 
     private void Awake()
     {
@@ -26,30 +23,26 @@ public class UnitTaker : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<Base>())
+        if (other.GetComponent<Shelter>())
         {
             _isBase = true;
         }
         else if (other.TryGetComponent(out Resource gold))
         {
             if (gold == _targetResource)
-            {
-                _isGold = true;
+            {                
                 _tempResource = gold;
             }
         }
         else if (other.TryGetComponent<Flag>(out Flag flag))
         {
             _tempFlag = flag;
-            _isFlag = true;
         }
     }
 
     private void OnTriggerExit()
     {
-        _isGold = false;
         _isBase = false;
-        _isFlag = false;
     }
 
     public void ChooseTarget(Resource resource)
@@ -60,15 +53,15 @@ public class UnitTaker : MonoBehaviour
 
     public void Interact()
     {
-        if (_isBase && _tempResource != null)
-        {
-            PutGold();
-        }
-        else if (_isFlag)
+        if (_tempFlag != null)
         {
             BuildBase();
         }
-        else if (_isGold)
+        else if (_isBase)
+        {
+            PutGold();
+        }
+        else if (_tempResource != null)
         {
             TakeGold();
         }
@@ -93,5 +86,6 @@ public class UnitTaker : MonoBehaviour
     private void BuildBase()
     {
         _tracker.BuildBase(_tempFlag, _unit);
+        _tempFlag = null;
     }
 }

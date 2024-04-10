@@ -6,41 +6,41 @@ using UnityEngine;
 public class BaseBuilder : MonoBehaviour
 {
     [SerializeField] private Flag _flagPrefab;
-    [SerializeField] private Base _basePrefab;
     [SerializeField] private Camera _camera;
     [SerializeField] private int _rayDirection;
     [SerializeField] private LayerMask _hitMask;
 
     private Collider[] _colliders;
-    private Flag _tempflag;
     private Ray _ray;
     private bool _isWork;
-
-    public Flag GetTempFlag() => _tempflag;
 
     private void Update()
     {
         _ray = _camera.ScreenPointToRay(Input.mousePosition);
 
         if (_isWork == false && Physics.Raycast(_ray, out RaycastHit _hit))
-            if (Input.GetMouseButtonDown(0) && _hit.transform.gameObject.TryGetComponent(out Base tempbase))
-                if (tempbase.GetUnitsCount > 1)
+            if (Input.GetMouseButtonDown(0)
+                && _hit.transform.gameObject.TryGetComponent(out Shelter tempbase))
+                if (tempbase.UnitsCount > 1)
                     StartCoroutine(ShowTemplate(tempbase));
     }
 
-    private void SetTemplate(Flag flag)
+    private void SetTemplate(Shelter shelter, Flag flag)
     {
-        if (_tempflag != null)
+        if (shelter.Flag != null)
         {
-            _tempflag.transform.position = flag.transform.position;
+            shelter.Flag.transform.position = flag.transform.position;
         }
         else
         {
-            _tempflag = Instantiate(_flagPrefab, flag.transform.position, flag.transform.rotation, transform);
+            Flag tempFlag = Instantiate(_flagPrefab, flag.transform.position,
+                flag.transform.rotation, transform);
+
+            shelter.SendBuildRequest(tempFlag);
         }
     }
 
-    private IEnumerator ShowTemplate(Base tempBase)
+    private IEnumerator ShowTemplate(Shelter shelter)
     {
         _isWork = true;
 
@@ -54,22 +54,23 @@ public class BaseBuilder : MonoBehaviour
         {
             if (Physics.Raycast(_ray, out RaycastHit hit, _rayDirection, _hitMask))
             {
-                flag.transform.position = new Vector3(hit.point.x, tempBase.transform.position.y, hit.point.z);
+                flag.transform.position = new Vector3(hit.point.x,
+                    shelter.transform.position.y, hit.point.z);
 
-                _colliders = Physics.OverlapBox(flag.transform.position, flag.transform.localScale * 6, Quaternion.identity);
+                _colliders = Physics.OverlapBox(flag.transform.position,
+                    flag.transform.localScale * 6, Quaternion.identity);
 
                 if (_colliders.All(collider => collider.GetComponent<LevelPlane>()))
                     flag.gameObject.SetActive(true);
                 else
                     flag.gameObject.SetActive(false);
 
-                if (Input.GetMouseButtonDown(0) == true && flag.gameObject.activeInHierarchy == true)
+                if (Input.GetMouseButtonDown(0) == true
+                    && flag.gameObject.activeInHierarchy == true)
                 {
                     flagCollider.enabled = true;
 
-                    SetTemplate(flag);                    
-
-                    tempBase.SendBuildRequest(_tempflag);
+                    SetTemplate(shelter, flag);                    
 
                     _isWork = false;
                 }

@@ -4,17 +4,19 @@ using System.Linq;
 
 public class BaseCollector : MonoBehaviour
 {
-    [SerializeField] private int _basePrice;
+    [SerializeField] private int _shelterPrice;
     [SerializeField] private int _unitPrice;
-    [SerializeField] private ResourcePool _resourcePool;
     [SerializeField] private Wallet _wallet;
-    [SerializeField] private Base _basePrefab;
+    [SerializeField] private ResourcePool _resourcePool;
+    [SerializeField] private ParticleSystem _particleShelterPrefab;
+    [SerializeField] private Shelter _shelterPrefab;
+    [SerializeField] private Vector3 _particleRotation;
 
-    private Flag _flag;
-    private List<Base> _bases;
+    private List<Shelter> _shelters;
+    private bool _isFlag;
 
-    public ResourcePool GetResourcePool => _resourcePool;
-    public Wallet GetWallet => _wallet;
+    public ResourcePool ResourcePool => _resourcePool;
+    public bool TryBuyBase => _wallet.GoldCount >= _shelterPrice;
 
     private void OnEnable()
     {
@@ -28,60 +30,46 @@ public class BaseCollector : MonoBehaviour
 
     private void Awake()
     {
-        _bases = new List<Base>();
+        _shelters = new List<Shelter>();
     }
 
     private void Start()
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            _bases.Add(transform.GetChild(i).GetComponent<Base>());
+            _shelters.Add(transform.GetChild(i).GetComponent<Shelter>());
         }
     }
 
-    public void GenerateBase(Vector3 tempPosition, Unit unit)
+    public void GenerateBase(Vector3 position, Unit unit)
     {
-        Base tempBase = Instantiate(_basePrefab, tempPosition, Quaternion.identity, transform);
-        _bases.Add(tempBase);
+        Shelter shelter = Instantiate(_shelterPrefab, position, Quaternion.identity, transform);
+        Instantiate(_particleShelterPrefab, shelter.transform.position,
+            Quaternion.identity).transform.Rotate(_particleRotation); ;
 
-        tempBase.TakeUnit(unit);
+        shelter.TakeUnit(unit);
 
-        ClearFlag();
+        _shelters.Add(shelter);
+
+        _wallet.DecreaseResources(_shelterPrice);
+
+        _isFlag = false;
     }
-
-    public bool TryBuyBase()
+       
+    public void TakeFlag()
     {
-        if (_wallet.GoldCount >= _basePrice)
-        {
-            _wallet.DecreaseResources(_basePrice);
-            return true;
-        }
-        else
-        {
-            return false;
-
-        }
-    }
-
-    public void TakeFlag(Flag flag)
-    {
-        _flag = flag;
-    }
-
-    public void ClearFlag()
-    {
-        _flag = null;
+        _isFlag = true;
     }
 
     private void BuyInterect()
     {
-        if (_flag == null && _wallet.GoldCount >= _unitPrice)
+        if (_isFlag == false && _wallet.GoldCount >= _unitPrice)
         {
-            Base tempBase = _bases.FirstOrDefault(tempBase => tempBase.GetUnitSpawner.SpawnPoints.Count() > 0);
+            Shelter shelter = _shelters.FirstOrDefault(shelter => shelter.UnitSpawner.SpawnPoints.Count() > 0);
 
-            if (tempBase != null)
+            if (shelter != null)
             {
-                tempBase.BuyUnit();
+                shelter.BuyUnit();
                 _wallet.DecreaseResources(_unitPrice);
             }
         }

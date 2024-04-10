@@ -4,17 +4,15 @@ using UnityEngine;
 [RequireComponent(typeof(UnitTaker))]
 public class UnitMover : MonoBehaviour
 {
-    private Transform _startTransfrom;
+    public Transform StartTransfrom { get; private set; }
     private UnitTaker _unitTaker;
-    private bool _isMove = false;
     private float _speed;
-
-    public Transform GetStartTransfrom => _startTransfrom;
+    private bool _isMove = false;
 
     private void Awake()
     {
         _unitTaker = GetComponent<UnitTaker>();
-        _speed = transform.parent.GetComponent<Tracker>().GetSpeed;
+        _speed = transform.parent.GetComponent<Tracker>().Speed;
     }
 
     public void MoveToPoint(Transform target)
@@ -24,12 +22,12 @@ public class UnitMover : MonoBehaviour
 
     public void MoveBack()
     {
-        MoveToPoint(_startTransfrom);
+        MoveToPoint(StartTransfrom);
     }
 
     public void ChangeStartPosition(Transform tempTransform)
     {
-        _startTransfrom = tempTransform;
+        StartTransfrom = tempTransform;
     }
 
     private IEnumerator Move(Transform target)

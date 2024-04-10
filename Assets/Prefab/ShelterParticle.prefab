@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8594713877718351816}
   - component: {fileID: 7149612196122407600}
   m_Layer: 0
-  m_Name: BaseParticle
+  m_Name: ShelterParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,7 @@ ParticleSystem:
   serializedVersion: 8
   lengthInSec: 2
   simulationSpeed: 4
-  stopAction: 1
+  stopAction: 2
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}

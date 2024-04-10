@@ -1,27 +1,30 @@
 using UnityEngine;
 
-public class Base : MonoBehaviour
+public class Shelter : MonoBehaviour
 {
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Tracker _tracker;
 
     private BaseCollector _baseCollector;
 
-    public int GetUnitsCount => _tracker.GetUnitsCount;
-    public UnitSpawner GetUnitSpawner => _unitSpawner;
-    public bool TryBuyBase => _baseCollector.TryBuyBase();
+    public UnitSpawner UnitSpawner => _unitSpawner;
+    public Flag Flag { get; private set; }
+    public int UnitsCount => _tracker.UnitsCount;
+    public bool TryBuyBase => _baseCollector.TryBuyBase;
 
     private void Awake()
     {
         _baseCollector = transform.parent.GetComponent<BaseCollector>();
 
-        _tracker.Init(_baseCollector.GetResourcePool);
+        _tracker.Init(_baseCollector.ResourcePool);
     }
 
     public void SendBuildRequest(Flag flag)
     {
-        _baseCollector.TakeFlag(flag);
+        _baseCollector.TakeFlag();
         _tracker.TakeFlag(flag);
+
+        Flag = flag;
     }
 
     public void TakeUnit(Unit unit)
@@ -34,6 +37,8 @@ public class Base : MonoBehaviour
         _baseCollector.GenerateBase(flag.transform.position, unit);
 
         Destroy(flag.gameObject);
+
+        Flag = null;
     }
 
     public void BuyUnit()

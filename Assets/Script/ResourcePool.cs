@@ -77,7 +77,7 @@ public class ResourcePool : MonoBehaviour
 
     private IEnumerable<Resource> GetAllResources()
     {
-        List<Resource> resources = new List<Resource>();
+        List<Resource> resources = new();
 
         for (int i = 0; i < _container.childCount; i++)
         {

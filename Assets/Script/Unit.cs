@@ -8,9 +8,9 @@ public class Unit : MonoBehaviour
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
 
-    public Transform GetStartTransform => _unitMover.GetStartTransfrom;
-
+    public Transform StartTransform => _unitMover.StartTransfrom;
     public bool IsBusy { get; private set; }
+
     private void Awake()
     {
         _tracker = transform.parent.GetComponent<Tracker>();
@@ -28,7 +28,7 @@ public class Unit : MonoBehaviour
 
     public void ComeFlag(Flag flag)
     {
-        _unitMover.MoveToPoint(flag.GetStartPosition.transform);
+        _unitMover.MoveToPoint(flag.transform);
 
         IsBusy = true;
     }

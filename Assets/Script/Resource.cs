@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class Resource : MonoBehaviour
 {
-    private bool _isGrub = false;
-
-    public bool IsGrub => _isGrub;
+    public bool IsGrub { get; private set; } = false;
 
     public void ChangeGrubBool()
     {
-        _isGrub = !_isGrub;
+        IsGrub = !IsGrub;
     }
 }

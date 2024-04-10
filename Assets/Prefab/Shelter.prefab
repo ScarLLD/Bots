@@ -43,9 +43,9 @@ GameObject:
   - component: {fileID: 4937802865580712563}
   - component: {fileID: 6796078545310433240}
   - component: {fileID: 8528467830482164556}
-  - component: {fileID: 2620816115667946403}
+  - component: {fileID: 7396834255855234792}
   m_Layer: 0
-  m_Name: Base
+  m_Name: Shelter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -139,7 +139,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 5, z: 10}
   m_Center: {x: 0, y: 2.1874862, z: 0.02345395}
---- !u!114 &2620816115667946403
+--- !u!114 &7396834255855234792
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 985971646635881532}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f6e8032faf6d424fb4672a6f7ccd78a, type: 3}
+  m_Script: {fileID: 11500000, guid: fd753740ca97b8b4ba0a5cfb44ccc29b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _unitSpawner: {fileID: 6882873045741524052}
