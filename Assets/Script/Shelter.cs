@@ -21,7 +21,7 @@ public class Shelter : MonoBehaviour
 
     public void SendBuildRequest(Flag flag)
     {
-        _baseCollector.TakeFlag();
+        _baseCollector.TakeFlag(flag);
         _tracker.TakeFlag(flag);
 
         Flag = flag;
@@ -34,9 +34,7 @@ public class Shelter : MonoBehaviour
 
     public void BuildBase(Flag flag, Unit unit)
     {
-        _baseCollector.GenerateBase(flag.transform.position, unit);
-
-        Destroy(flag.gameObject);
+        _baseCollector.GenerateBase(flag, unit);
 
         Flag = null;
     }

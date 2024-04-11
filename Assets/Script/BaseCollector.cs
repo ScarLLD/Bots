@@ -13,24 +13,25 @@ public class BaseCollector : MonoBehaviour
     [SerializeField] private Vector3 _particleRotation;
 
     private List<Shelter> _shelters;
-    private bool _isFlag;
+    private List<Flag> _flags;
 
     public ResourcePool ResourcePool => _resourcePool;
-    public bool TryBuyBase => _wallet.GoldCount >= _shelterPrice;
+    public bool TryBuyBase => _wallet.GoldCount >= _shelterPrice * _flags.Count;
 
     private void OnEnable()
     {
-        _wallet.ScoreIncreased += BuyInterect;
+        _wallet.ScoreChanged += BuyInterect;
     }
 
     private void OnDisable()
     {
-        _wallet.ScoreIncreased -= BuyInterect;
+        _wallet.ScoreChanged -= BuyInterect;
     }
 
     private void Awake()
     {
         _shelters = new List<Shelter>();
+        _flags = new List<Flag>();
     }
 
     private void Start()
@@ -41,9 +42,9 @@ public class BaseCollector : MonoBehaviour
         }
     }
 
-    public void GenerateBase(Vector3 position, Unit unit)
+    public void GenerateBase(Flag flag, Unit unit)
     {
-        Shelter shelter = Instantiate(_shelterPrefab, position, Quaternion.identity, transform);
+        Shelter shelter = Instantiate(_shelterPrefab, flag.transform.position, Quaternion.identity, transform);
         Instantiate(_particleShelterPrefab, shelter.transform.position,
             Quaternion.identity).transform.Rotate(_particleRotation); ;
 
@@ -53,17 +54,19 @@ public class BaseCollector : MonoBehaviour
 
         _wallet.DecreaseResources(_shelterPrice);
 
-        _isFlag = false;
+        _flags.Remove(flag);
+
+        Destroy(flag.gameObject);
     }
-       
-    public void TakeFlag()
+
+    public void TakeFlag(Flag flag)
     {
-        _isFlag = true;
+        _flags.Add(flag);
     }
 
     private void BuyInterect()
     {
-        if (_isFlag == false && _wallet.GoldCount >= _unitPrice)
+        if (_flags.Count == 0 && _wallet.GoldCount >= _unitPrice)
         {
             Shelter shelter = _shelters.FirstOrDefault(shelter => shelter.UnitSpawner.SpawnPoints.Count() > 0);
 

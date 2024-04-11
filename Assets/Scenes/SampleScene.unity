@@ -341,7 +341,7 @@ Transform:
   m_GameObject: {fileID: 271030304}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.306, y: 0, z: 0.95}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -379,7 +379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 896ab27b7e731a446a59c19966267918, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _flagPrefab: {fileID: 7383673094038143444, guid: b2a1d3f436b4eb241957f83ee8a4e95f, type: 3}
+  _flagPrefab: {fileID: 7782327212743613063, guid: ac84359418503a64ba4764cb8de0c20c, type: 3}
   _camera: {fileID: 963194227}
   _rayDirection: 100
   _hitMask:
@@ -1733,7 +1733,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _container: {fileID: 667745901}
-  _goldPrefab: {fileID: 6626778164229848470, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
+  _goldPrefab: {fileID: 4235115631740479259, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
   _particlePool: {fileID: 1261069745}
 --- !u!1 &2143122066
 GameObject:
@@ -1826,7 +1826,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1419646299977865975}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

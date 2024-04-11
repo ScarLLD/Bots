@@ -7,7 +7,7 @@ public class Wallet : MonoBehaviour
 
     public int GoldCount { get; private set; }
 
-    public event Action ScoreIncreased;
+    public event Action ScoreChanged;
 
     private void OnEnable()
     {
@@ -22,12 +22,12 @@ public class Wallet : MonoBehaviour
     public void DecreaseResources(int price)
     {
         GoldCount -= price;
+        ScoreChanged?.Invoke();
     }
 
     private void CollectResource()
     {
         GoldCount += 1;
-
-        ScoreIncreased?.Invoke();
+        ScoreChanged?.Invoke();
     }
 }

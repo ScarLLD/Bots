@@ -44,6 +44,8 @@ public class BaseBuilder : MonoBehaviour
     {
         _isWork = true;
 
+        Vector3 positionMultiple = _flagPrefab.transform.position;
+
         Flag flag = Instantiate(_flagPrefab, transform);
 
         BoxCollider flagCollider = flag.GetComponent<BoxCollider>();
@@ -55,7 +57,7 @@ public class BaseBuilder : MonoBehaviour
             if (Physics.Raycast(_ray, out RaycastHit hit, _rayDirection, _hitMask))
             {
                 flag.transform.position = new Vector3(hit.point.x,
-                    shelter.transform.position.y, hit.point.z);
+                    positionMultiple.y, hit.point.z);
 
                 _colliders = Physics.OverlapBox(flag.transform.position,
                     flag.transform.localScale * 6, Quaternion.identity);
