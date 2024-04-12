@@ -11,13 +11,12 @@ public class UnitSpawner : MonoBehaviour
     private Tracker _tracker;
 
     public Queue<Transform> SpawnPoints { get; private set; }
-    public bool IsFull { get; private set; } = false;
 
     private void Awake()
     {
         _tracker = GetComponent<Tracker>();
 
-        GenerateSpawnPoint();
+        InitSpawnPoints();
     }
 
     private void Start()
@@ -35,7 +34,7 @@ public class UnitSpawner : MonoBehaviour
         Transform tempTransform = SpawnPoints.Dequeue();
 
         Unit unit = Instantiate(_unitPrefab, tempTransform.position, Quaternion.identity, transform);
-        unit.Init(tempTransform);
+        unit.Init(tempTransform, _tracker);
 
         _tracker.TakeUnit(unit);
     }
@@ -48,7 +47,7 @@ public class UnitSpawner : MonoBehaviour
         unit.ChangeBase(SpawnPoints.Dequeue());
     }
 
-    private void GenerateSpawnPoint()
+    private void InitSpawnPoints()
     {
         SpawnPoints = new Queue<Transform>();
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class BaseCollector : MonoBehaviour
+public class SheltersCollector : MonoBehaviour
 {
     [SerializeField] private int _shelterPrice;
     [SerializeField] private int _unitPrice;
@@ -42,7 +42,7 @@ public class BaseCollector : MonoBehaviour
         }
     }
 
-    public void GenerateBase(Flag flag, Unit unit)
+    public void SpawnShelter(Flag flag, Unit unit)
     {
         Shelter shelter = Instantiate(_shelterPrefab, flag.transform.position, Quaternion.identity, transform);
         Instantiate(_particleShelterPrefab, shelter.transform.position,

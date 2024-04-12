@@ -1,48 +1,49 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(UnitMover))]
 [RequireComponent(typeof(Unit))]
 public class UnitTaker : MonoBehaviour
 {
     [SerializeField] private Vector3 _objectPosition;
 
-    private Tracker _tracker;
-    private UnitMover _unitMover;
     private Unit _unit;
-    private Flag _tempFlag;
     private Resource _targetResource;
-    private Resource _tempResource;
-    private bool _isBase = false;
+
+    public Flag TempFlag { get; private set; }
+    public Shelter TempShelter { get; private set; }
+    public Resource TempResource { get; private set; }
 
     private void Awake()
     {
-        _tracker = transform.parent.GetComponent<Tracker>();
-        _unitMover = GetComponent<UnitMover>();
         _unit = GetComponent<Unit>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.GetComponent<Shelter>())
+        if (other.TryGetComponent(out Shelter shelter))
         {
-            _isBase = true;
+            TempShelter = shelter;
         }
         else if (other.TryGetComponent(out Resource gold))
         {
             if (gold == _targetResource)
-            {                
-                _tempResource = gold;
+            {
+                TempResource = gold;
             }
         }
         else if (other.TryGetComponent<Flag>(out Flag flag))
         {
-            _tempFlag = flag;
+            TempFlag = flag;
         }
     }
 
-    private void OnTriggerExit()
+    public void Init(Shelter shelter)
     {
-        _isBase = false;
+        TempShelter = shelter;
+    }
+
+    public void ClearFlag()
+    {
+        TempFlag = null;
     }
 
     public void ChooseTarget(Resource resource)
@@ -51,41 +52,19 @@ public class UnitTaker : MonoBehaviour
         _targetResource = resource;
     }
 
-    public void Interact()
+    public void TakeGold()
     {
-        if (_tempFlag != null)
-        {
-            BuildBase();
-        }
-        else if (_isBase)
-        {
-            PutGold();
-        }
-        else if (_tempResource != null)
-        {
-            TakeGold();
-        }
+        TempResource.transform.parent = transform;
+        TempResource.transform.localPosition = _objectPosition;
     }
 
-    private void TakeGold()
+    public void PutGold()
     {
-        _tempResource.transform.parent = transform;
-        _tempResource.transform.localPosition = _objectPosition;
+        _unit.ConfirmDelivery(TempResource);
 
-        _unitMover.MoveBack();
-    }
+        TempResource = null;
+        TempShelter = null;
 
-    private void PutGold()
-    {
-        _unit.ConfirmDelivery(_tempResource);
-
-        _tempResource = null;
         _targetResource = null;
-    }
-
-    private void BuildBase()
-    {
-        _tracker.BuildBase(_tempFlag, _unit);
-        _tempFlag = null;
     }
 }

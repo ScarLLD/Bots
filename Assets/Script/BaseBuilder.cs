@@ -2,7 +2,7 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(BaseCollector))]
+[RequireComponent(typeof(SheltersCollector))]
 public class BaseBuilder : MonoBehaviour
 {
     [SerializeField] private Flag _flagPrefab;
@@ -20,9 +20,9 @@ public class BaseBuilder : MonoBehaviour
 
         if (_isWork == false && Physics.Raycast(_ray, out RaycastHit _hit))
             if (Input.GetMouseButtonDown(0)
-                && _hit.transform.gameObject.TryGetComponent(out Shelter tempbase))
-                if (tempbase.UnitsCount > 1)
-                    StartCoroutine(ShowTemplate(tempbase));
+                && _hit.transform.gameObject.TryGetComponent(out Shelter shelter))
+                if (shelter.UnitsCount > 1)
+                    StartCoroutine(ShowTemplate(shelter));
     }
 
     private void SetTemplate(Shelter shelter, Flag flag)

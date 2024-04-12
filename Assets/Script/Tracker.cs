@@ -6,6 +6,7 @@ using UnityEngine;
 public class Tracker : MonoBehaviour
 {
     [SerializeField] private float _speed;
+    [SerializeField] private int _minUnitsCount;
     [SerializeField] private float _timeBetwenGrub;
 
     private UnitSpawner _unitSpawner;
@@ -30,7 +31,7 @@ public class Tracker : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Scan());
+        StartCoroutine(Interect());
     }
 
     public void Init(ResourcePool resourcePool)
@@ -64,7 +65,7 @@ public class Tracker : MonoBehaviour
         _flag = flag;
     }
 
-    private IEnumerator Scan()
+    private IEnumerator Interect()
     {
         _isInterecting = true;
 
@@ -72,7 +73,7 @@ public class Tracker : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_flag != null && _units.Count > 1 && _base.TryBuyBase)
+                if (_flag != null && _units.Count > _minUnitsCount && _base.TryBuyBase)
                 {
                     _unitSpawner.TakeSpawnPoint(unit.StartTransform);
                     _units.Remove(unit);

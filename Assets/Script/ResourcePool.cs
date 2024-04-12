@@ -9,32 +9,32 @@ public class ResourcePool : MonoBehaviour
     [SerializeField] private Resource _goldPrefab;
     [SerializeField] private ParticlePool _particlePool;
 
-    private Queue<Resource> _pool;
+    public Queue<Resource> Pool { get; private set; }
 
     public event Action ResourceCollected;
 
     private void Awake()
     {
-        _pool = new Queue<Resource>();
+        Pool = new Queue<Resource>();
     }
 
     public Resource GetResource()
     {
-        if (_pool.Count == 0)
+        if (Pool.Count == 0)
         {
             var resource = Instantiate(_goldPrefab, transform.position, transform.rotation, _container);
 
             return resource;
         }
 
-        return _pool.Dequeue();
+        return Pool.Dequeue();
     }
 
     public void PutResource(Resource resource)
     {
         resource.gameObject.SetActive(false);
         resource.transform.parent = _container;
-        _pool.Enqueue(resource);
+        Pool.Enqueue(resource);
     }
 
     public void CollectResource(Resource resource)

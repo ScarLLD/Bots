@@ -5,7 +5,7 @@ public class Shelter : MonoBehaviour
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Tracker _tracker;
 
-    private BaseCollector _baseCollector;
+    private SheltersCollector _baseCollector;
 
     public UnitSpawner UnitSpawner => _unitSpawner;
     public Flag Flag { get; private set; }
@@ -14,7 +14,7 @@ public class Shelter : MonoBehaviour
 
     private void Awake()
     {
-        _baseCollector = transform.parent.GetComponent<BaseCollector>();
+        _baseCollector = transform.parent.GetComponent<SheltersCollector>();
 
         _tracker.Init(_baseCollector.ResourcePool);
     }
@@ -34,7 +34,7 @@ public class Shelter : MonoBehaviour
 
     public void BuildBase(Flag flag, Unit unit)
     {
-        _baseCollector.GenerateBase(flag, unit);
+        _baseCollector.SpawnShelter(flag, unit);
 
         Flag = null;
     }

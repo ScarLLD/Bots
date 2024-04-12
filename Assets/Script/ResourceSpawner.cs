@@ -11,7 +11,6 @@ public class ResourceSpawner : MonoBehaviour
 
     private Transform[] _spawnPoints;
     private WaitForSeconds _wait;
-    private bool _isGenerate;
 
     private void Awake()
     {
@@ -24,25 +23,18 @@ public class ResourceSpawner : MonoBehaviour
 
     private void Start()
     {
-        GenerateResources();
-    }
-
-    private void GenerateResources()
-    {
         StartCoroutine(Generate());
     }
 
     private IEnumerator Generate()
     {
-        _isGenerate = true;
-
-        while (_isGenerate)
+        while (enabled)
         {
             List<Transform> _tempSpawnPoints = _spawnPoints.ToList();
 
             int goldCount = Random.Range(1, _tempSpawnPoints.Count);
 
-            for (int i = 0; i < goldCount; i++)
+            for (int i = 0; _tempSpawnPoints.Count > 0 && i < goldCount; i++)
             {
                 int index = Random.Range(0, _tempSpawnPoints.Count - 1);
                 Transform spawnPoint = _tempSpawnPoints[index];
@@ -53,9 +45,9 @@ public class ResourceSpawner : MonoBehaviour
 
                     resource.transform.position = spawnPoint.position;
                     resource.gameObject.SetActive(true);
-
-                    _tempSpawnPoints.Remove(spawnPoint);
                 }
+
+                _tempSpawnPoints.Remove(spawnPoint);
             }
 
             yield return _wait;
