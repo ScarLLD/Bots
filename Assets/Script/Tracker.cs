@@ -8,14 +8,14 @@ public class Tracker : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private int _minUnitsCount;
     [SerializeField] private float _timeBetwenGrub;
+    [SerializeField] private Shelter _shelter;
 
+    private bool _isInterecting = false;
     private UnitSpawner _unitSpawner;
-    private ResourcePool _resourcePool;
+    private ResourceSpawner _resourceSpawner;
     private WaitForSeconds _wait;
     private List<Unit> _units;
-    private Shelter _base;
     private Flag _flag;
-    private bool _isInterecting = false;
 
     public float Speed => _speed;
     public int UnitsCount => _units.Count;
@@ -23,7 +23,6 @@ public class Tracker : MonoBehaviour
     private void Awake()
     {
         _unitSpawner = GetComponent<UnitSpawner>();
-        _base = transform.parent.GetComponent<Shelter>();
 
         _units = new List<Unit>();
         _wait = new WaitForSeconds(_timeBetwenGrub);
@@ -34,14 +33,14 @@ public class Tracker : MonoBehaviour
         StartCoroutine(Interect());
     }
 
-    public void Init(ResourcePool resourcePool)
+    public void Init(ResourceSpawner resourceSpawner)
     {
-        _resourcePool = resourcePool;
+        _resourceSpawner = resourceSpawner;
     }
 
-    public void BuildBase(Flag flag, Unit unit)
+    public void SendBuildRequest(Flag flag, Unit unit)
     {
-        _base.BuildBase(flag, unit);
+        _shelter.BuildBase(flag, unit);
     }
 
     public bool TryGetUnit(out Unit unit)
@@ -52,7 +51,7 @@ public class Tracker : MonoBehaviour
 
     public void ConfirmDelivery(Resource resource)
     {
-        _resourcePool.CollectResource(resource);
+        _resourceSpawner.CollectResource(resource);
     }
 
     public void TakeUnit(Unit unit)
@@ -73,7 +72,7 @@ public class Tracker : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_flag != null && _units.Count > _minUnitsCount && _base.TryBuyBase)
+                if (_flag != null && _units.Count > _minUnitsCount && _shelter.TryBuyShelter)
                 {
                     _unitSpawner.TakeSpawnPoint(unit.StartTransform);
                     _units.Remove(unit);
@@ -81,7 +80,7 @@ public class Tracker : MonoBehaviour
                     unit.ComeFlag(_flag);
                     _flag = null;
                 }
-                else if (_resourcePool.TrySelectResource(out Resource resource))
+                else if (_resourceSpawner.TrySelectResource(out Resource resource))
                 {
                     unit.StartGrub(resource);
                 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Wallet : MonoBehaviour
 {
-    [SerializeField] private ResourcePool _resourcePool;
+    [SerializeField] private ResourceSpawner _resourceSpawner;
 
     public int GoldCount { get; private set; }
 
@@ -11,12 +11,12 @@ public class Wallet : MonoBehaviour
 
     private void OnEnable()
     {
-        _resourcePool.ResourceCollected += CollectResource;
+        _resourceSpawner.ResourceCollected += CollectResource;
     }
 
     private void OnDisable()
     {
-        _resourcePool.ResourceCollected -= CollectResource;
+        _resourceSpawner.ResourceCollected -= CollectResource;
     }
 
     public void DecreaseResources(int price)

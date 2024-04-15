@@ -360,7 +360,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
+  _minUnitsCount: 2
   _timeBetwenGrub: 0.5
+  _shelter: {fileID: 7396834255855234792}
 --- !u!114 &6882873045741524052
 MonoBehaviour:
   m_ObjectHideFlags: 0

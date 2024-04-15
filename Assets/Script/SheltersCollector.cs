@@ -7,16 +7,15 @@ public class SheltersCollector : MonoBehaviour
     [SerializeField] private int _shelterPrice;
     [SerializeField] private int _unitPrice;
     [SerializeField] private Wallet _wallet;
-    [SerializeField] private ResourcePool _resourcePool;
     [SerializeField] private ParticleSystem _particleShelterPrefab;
+    [SerializeField] private ResourceSpawner _resourceSpawner;
     [SerializeField] private Shelter _shelterPrefab;
     [SerializeField] private Vector3 _particleRotation;
 
     private List<Shelter> _shelters;
     private List<Flag> _flags;
 
-    public ResourcePool ResourcePool => _resourcePool;
-    public bool TryBuyBase => _wallet.GoldCount >= _shelterPrice * _flags.Count;
+    public ResourceSpawner ResourceSpawner => _resourceSpawner;
 
     private void OnEnable()
     {
@@ -42,6 +41,11 @@ public class SheltersCollector : MonoBehaviour
         }
     }
 
+    public bool TryBuyShelter()
+    {
+        return _wallet.GoldCount >= _shelterPrice * _flags.Count;
+    }
+
     public void SpawnShelter(Flag flag, Unit unit)
     {
         Shelter shelter = Instantiate(_shelterPrefab, flag.transform.position, Quaternion.identity, transform);
@@ -49,13 +53,9 @@ public class SheltersCollector : MonoBehaviour
             Quaternion.identity).transform.Rotate(_particleRotation); ;
 
         shelter.TakeUnit(unit);
-
         _shelters.Add(shelter);
-
         _wallet.DecreaseResources(_shelterPrice);
-
         _flags.Remove(flag);
-
         Destroy(flag.gameObject);
     }
 

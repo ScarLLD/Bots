@@ -13,9 +13,7 @@ public class Unit : MonoBehaviour
     private void Awake()
     {
         _unitMover = GetComponent<UnitMover>();
-        _unitTaker = GetComponent<UnitTaker>();
-
-        _unitTaker.Init();
+        _unitTaker = GetComponent<UnitTaker>();        
     }
 
     public void Init(Transform tempTransform, Tracker tracker)
@@ -57,7 +55,7 @@ public class Unit : MonoBehaviour
     {
         if (_unitTaker.TempFlag != null)
         {
-            _tracker.BuildBase(_unitTaker.TempFlag, this);
+            _tracker.SendBuildRequest(_unitTaker.TempFlag, this);
             _unitTaker.ClearFlag();
         }
         else if (_unitTaker.TempShelter != null)

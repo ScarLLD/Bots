@@ -36,9 +36,9 @@ public class UnitTaker : MonoBehaviour
         }
     }
 
-    public void Init(Shelter shelter)
+    private void OnTriggerExit(Collider other)
     {
-        TempShelter = shelter;
+        TempShelter = null;
     }
 
     public void ClearFlag()
@@ -48,7 +48,6 @@ public class UnitTaker : MonoBehaviour
 
     public void ChooseTarget(Resource resource)
     {
-        resource.ChangeGrubBool();
         _targetResource = resource;
     }
 

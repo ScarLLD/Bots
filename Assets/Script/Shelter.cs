@@ -5,23 +5,23 @@ public class Shelter : MonoBehaviour
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Tracker _tracker;
 
-    private SheltersCollector _baseCollector;
+    private SheltersCollector _shelterCollector;
 
-    public UnitSpawner UnitSpawner => _unitSpawner;
     public Flag Flag { get; private set; }
+    public UnitSpawner UnitSpawner => _unitSpawner;
     public int UnitsCount => _tracker.UnitsCount;
-    public bool TryBuyBase => _baseCollector.TryBuyBase;
+    public bool TryBuyShelter => _shelterCollector.TryBuyShelter();
 
     private void Awake()
     {
-        _baseCollector = transform.parent.GetComponent<SheltersCollector>();
+        _shelterCollector = transform.parent.GetComponent<SheltersCollector>();
 
-        _tracker.Init(_baseCollector.ResourcePool);
+        _tracker.Init(_shelterCollector.ResourceSpawner);
     }
 
     public void SendBuildRequest(Flag flag)
     {
-        _baseCollector.TakeFlag(flag);
+        _shelterCollector.TakeFlag(flag);
         _tracker.TakeFlag(flag);
 
         Flag = flag;
@@ -34,7 +34,7 @@ public class Shelter : MonoBehaviour
 
     public void BuildBase(Flag flag, Unit unit)
     {
-        _baseCollector.SpawnShelter(flag, unit);
+        _shelterCollector.SpawnShelter(flag, unit);
 
         Flag = null;
     }

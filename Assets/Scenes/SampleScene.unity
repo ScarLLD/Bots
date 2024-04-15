@@ -195,6 +195,7 @@ GameObject:
   m_Component:
   - component: {fileID: 240901792}
   - component: {fileID: 240901791}
+  - component: {fileID: 240901793}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -216,7 +217,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timeBetwenSpawn: 5
   _spawnPointsParent: {fileID: 1194046697}
-  _resourcePool: {fileID: 2048186191}
+  _particlePool: {fileID: 1261069745}
 --- !u!4 &240901792
 Transform:
   m_ObjectHideFlags: 0
@@ -237,6 +238,20 @@ Transform:
   - {fileID: 894497333}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &240901793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240901790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47d7e3945a7523044a9df612d97fb883, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _container: {fileID: 667745901}
+  _goldPrefab: {fileID: 4235115631740479259, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
 --- !u!1 &256671927
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,8 +378,8 @@ MonoBehaviour:
   _shelterPrice: 5
   _unitPrice: 3
   _wallet: {fileID: 1337701352}
-  _resourcePool: {fileID: 2048186191}
   _particleShelterPrefab: {fileID: 8594713877718351816, guid: 345939e2ed2ebe149b1b2b1b628cd026, type: 3}
+  _resourceSpawner: {fileID: 240901791}
   _shelterPrefab: {fileID: 7396834255855234792, guid: cadaab0216d81ef4e8a08e3765a7a87e, type: 3}
   _particleRotation: {x: -90, y: 0, z: 0}
 --- !u!114 &271030307
@@ -1289,7 +1304,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f0bb66f9d62974ea4c2b0601149768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _resourcePool: {fileID: 2048186191}
+  _resourceSpawner: {fileID: 240901791}
 --- !u!1 &1352494115
 GameObject:
   m_ObjectHideFlags: 0
@@ -1734,7 +1749,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _container: {fileID: 667745901}
   _goldPrefab: {fileID: 4235115631740479259, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
-  _particlePool: {fileID: 1261069745}
 --- !u!1 &2143122066
 GameObject:
   m_ObjectHideFlags: 0
@@ -2132,7 +2146,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
+  _minUnitsCount: 0
   _timeBetwenGrub: 0.5
+  _shelter: {fileID: 8699708338772328483}
 --- !u!4 &7356784791640763820
 Transform:
   m_ObjectHideFlags: 0
