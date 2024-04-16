@@ -5,9 +5,9 @@ public class Wallet : MonoBehaviour
 {
     [SerializeField] private ResourceSpawner _resourceSpawner;
 
-    public int GoldCount { get; private set; }
-
     public event Action ScoreChanged;
+
+    public int GoldCount { get; private set; }
 
     private void OnEnable()
     {

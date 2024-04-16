@@ -11,20 +11,20 @@ public class ResourceSpawner : MonoBehaviour
     [SerializeField] private float _timeBetwenSpawn;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private ParticlePool _particlePool;
+    [SerializeField] private LayerMask _resourceLayer;
 
-    private float _minVector3Distence = 0.001f;
     private ResourcePool _resourcePool;
+    private ResourcesStorage _resourceStorage;
     private WaitForSeconds _wait;
     private List<Transform> _spawnPoints;
-    private Queue<Resource> _resources;
 
     public event Action ResourceCollected;
 
     private void Awake()
     {
         _resourcePool = GetComponent<ResourcePool>();
+        _resourceStorage = GetComponent<ResourcesStorage>();
 
-        _resources = new Queue<Resource>();
         _spawnPoints = new List<Transform>();
         _wait = new WaitForSeconds(_timeBetwenSpawn);
 
@@ -44,17 +44,7 @@ public class ResourceSpawner : MonoBehaviour
         SpawnParticle(resource.transform.position);
 
         ResourceCollected?.Invoke();
-    }
-
-    public bool TrySelectResource(out Resource resource)
-    {
-        resource = null;
-
-        if (_resources.Count > 0)
-            resource = _resources.Dequeue();
-
-        return resource != null;
-    }
+    }   
 
     private void SpawnParticle(Vector3 spawnPosition)
     {
@@ -70,18 +60,21 @@ public class ResourceSpawner : MonoBehaviour
         {
             List<Transform> _tempSpawnPoints = _spawnPoints.ToList();
 
-            int goldCount = Random.Range(1, _spawnPoints.Count);
+            int TrySpawnCount = Random.Range(1, _spawnPoints.Count);
 
-            for (int i = 0; i < goldCount && i <= _tempSpawnPoints.Count; i++)
+            for (int i = 0; i < TrySpawnCount; i++)
             {
                 int index = Random.Range(0, _tempSpawnPoints.Count - 1);
                 Transform spawnPoint = _tempSpawnPoints[index];
+                SphereCollider[] hitColliders = new SphereCollider[1];
 
-                if (_resources.All(resource => (Vector3.Distance
-                (resource.transform.position, spawnPoint.transform.position) > _minVector3Distence)))
+                int collidersCount = Physics.OverlapSphereNonAlloc
+                    (spawnPoint.position, 1, hitColliders, _resourceLayer);
+
+                if (collidersCount == 0)
                 {
                     Resource resource = _resourcePool.GetResource();
-                    _resources.Enqueue(resource);
+                    _resourceStorage.TakeResource(resource);
 
                     resource.transform.position = spawnPoint.position;
                     resource.gameObject.SetActive(true);

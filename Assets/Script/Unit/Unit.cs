@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(UnitMover), typeof(UnitTaker))]
 public class Unit : MonoBehaviour
 {
-    private Tracker _tracker;
+    private Employer _employer;
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
 
@@ -16,9 +16,9 @@ public class Unit : MonoBehaviour
         _unitTaker = GetComponent<UnitTaker>();        
     }
 
-    public void Init(Transform tempTransform, Tracker tracker)
+    public void Init(Transform tempTransform, Employer tracker)
     {
-        _tracker = tracker;
+        _employer = tracker;
         _unitMover.ChangeStartPosition(tempTransform);
     }
 
@@ -39,7 +39,7 @@ public class Unit : MonoBehaviour
 
     public void ConfirmDelivery(Resource gold)
     {
-        _tracker.ConfirmDelivery(gold);
+        _employer.ConfirmDelivery(gold);
 
         IsBusy = false;
     }
@@ -55,7 +55,7 @@ public class Unit : MonoBehaviour
     {
         if (_unitTaker.TempFlag != null)
         {
-            _tracker.SendBuildRequest(_unitTaker.TempFlag, this);
+            _employer.SendBuildRequest(_unitTaker.TempFlag, this);
             _unitTaker.ClearFlag();
         }
         else if (_unitTaker.TempShelter != null)

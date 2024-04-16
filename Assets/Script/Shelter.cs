@@ -3,26 +3,25 @@ using UnityEngine;
 public class Shelter : MonoBehaviour
 {
     [SerializeField] private UnitSpawner _unitSpawner;
-    [SerializeField] private Tracker _tracker;
+    [SerializeField] private Employer _employer;
 
-    private SheltersCollector _shelterCollector;
+    private SheltersCollector _sheltersCollector;
 
     public Flag Flag { get; private set; }
     public UnitSpawner UnitSpawner => _unitSpawner;
-    public int UnitsCount => _tracker.UnitsCount;
-    public bool TryBuyShelter => _shelterCollector.TryBuyShelter();
+    public int UnitsCount => _employer.UnitsCount;
+    public bool TryBuyShelter => _sheltersCollector.TryBuyShelter();
 
-    private void Awake()
+    public void Init(SheltersCollector sheltersCollector, ResourcesStorage resourcesStorage)
     {
-        _shelterCollector = transform.parent.GetComponent<SheltersCollector>();
-
-        _tracker.Init(_shelterCollector.ResourceSpawner);
+        _sheltersCollector = sheltersCollector;
+        _employer.Init(resourcesStorage);
     }
 
     public void SendBuildRequest(Flag flag)
     {
-        _shelterCollector.TakeFlag(flag);
-        _tracker.TakeFlag(flag);
+        _sheltersCollector.TakeFlag(flag);
+        _employer.TakeFlag(flag);
 
         Flag = flag;
     }
@@ -34,7 +33,7 @@ public class Shelter : MonoBehaviour
 
     public void BuildBase(Flag flag, Unit unit)
     {
-        _shelterCollector.SpawnShelter(flag, unit);
+        _sheltersCollector.SpawnShelter(flag, unit);
 
         Flag = null;
     }

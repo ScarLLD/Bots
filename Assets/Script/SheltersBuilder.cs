@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(SheltersCollector))]
-public class BaseBuilder : MonoBehaviour
+public class SheltersBuilder : MonoBehaviour
 {
     [SerializeField] private Flag _flagPrefab;
     [SerializeField] private Camera _camera;

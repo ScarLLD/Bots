@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Tracker : MonoBehaviour
+public class Employer : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private int _minUnitsCount;
@@ -12,10 +13,12 @@ public class Tracker : MonoBehaviour
 
     private bool _isInterecting = false;
     private UnitSpawner _unitSpawner;
-    private ResourceSpawner _resourceSpawner;
+    private ResourcesStorage _resourceChooser;
     private WaitForSeconds _wait;
     private List<Unit> _units;
     private Flag _flag;
+
+    public event Action<Resource> ResourceDelievered;
 
     public float Speed => _speed;
     public int UnitsCount => _units.Count;
@@ -33,9 +36,9 @@ public class Tracker : MonoBehaviour
         StartCoroutine(Interect());
     }
 
-    public void Init(ResourceSpawner resourceSpawner)
+    public void Init(ResourcesStorage resourcesStorage)
     {
-        _resourceSpawner = resourceSpawner;
+        _resourceChooser = resourcesStorage;
     }
 
     public void SendBuildRequest(Flag flag, Unit unit)
@@ -51,7 +54,7 @@ public class Tracker : MonoBehaviour
 
     public void ConfirmDelivery(Resource resource)
     {
-        _resourceSpawner.CollectResource(resource);
+        ResourceDelievered?.Invoke(resource);
     }
 
     public void TakeUnit(Unit unit)
@@ -80,7 +83,7 @@ public class Tracker : MonoBehaviour
                     unit.ComeFlag(_flag);
                     _flag = null;
                 }
-                else if (_resourceSpawner.TrySelectResource(out Resource resource))
+                else if (_resourceChooser.TryGetResource(out Resource resource))
                 {
                     unit.StartGrub(resource);
                 }

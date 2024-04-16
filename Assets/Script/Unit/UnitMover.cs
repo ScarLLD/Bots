@@ -13,7 +13,7 @@ public class UnitMover : MonoBehaviour
     private void Awake()
     {
         _unit = GetComponent<Unit>();
-        _speed = transform.parent.GetComponent<Tracker>().Speed;
+        _speed = transform.parent.GetComponent<Employer>().Speed;
     }
 
     public void MoveToPoint(Transform target)

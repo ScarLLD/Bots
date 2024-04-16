@@ -1,20 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Tracker))]
+[RequireComponent(typeof(Employer))]
 public class UnitSpawner : MonoBehaviour
 {
     [SerializeField] private int _startUnitsCount;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private Unit _unitPrefab;
 
-    private Tracker _tracker;
+    private Employer _tracker;
 
     public Queue<Transform> SpawnPoints { get; private set; }
 
     private void Awake()
     {
-        _tracker = GetComponent<Tracker>();
+        _tracker = GetComponent<Employer>();
 
         InitSpawnPoints();
     }

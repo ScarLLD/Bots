@@ -7,7 +7,6 @@ public class ResourcePool : MonoBehaviour
     [SerializeField] private Resource _goldPrefab;
 
     public Queue<Resource> Pool { get; private set; }
-    public Transform Container => _container;
 
     private void Awake()
     {
@@ -18,9 +17,7 @@ public class ResourcePool : MonoBehaviour
     {
         if (Pool.Count == 0)
         {
-            var resource = Instantiate(_goldPrefab, transform.position, transform.rotation, _container);
-
-            return resource;
+            return Instantiate(_goldPrefab, transform.position, transform.rotation, _container);            
         }
 
         return Pool.Dequeue();
