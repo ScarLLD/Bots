@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(UnitMover), typeof(UnitTaker))]
@@ -7,18 +8,42 @@ public class Unit : MonoBehaviour
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
 
+    public event Action<Flag, Unit> FlagDeleted;
+
     public Transform StartTransform => _unitMover.StartTransfrom;
     public bool IsBusy { get; private set; }
+
+    private void OnEnable()
+    {
+        _unitMover.Arrived += _unitTaker.Interact;
+        _unitTaker.ResourceTaken += _unitMover.MoveBack;
+        _unitTaker.ResourceDelivered += ConfirmDelivery;
+        _unitTaker.FlagDeleted += SendBuildRequest;
+    }
+
+    private void OnDisable()
+    {
+        _unitMover.Arrived -= _unitTaker.Interact;
+        _unitTaker.ResourceTaken -= _unitMover.MoveBack;
+        _unitTaker.ResourceDelivered -= ConfirmDelivery;
+        _unitTaker.FlagDeleted -= SendBuildRequest;
+    }
 
     private void Awake()
     {
         _unitMover = GetComponent<UnitMover>();
-        _unitTaker = GetComponent<UnitTaker>();        
+        _unitTaker = GetComponent<UnitTaker>();
     }
 
-    public void Init(Transform tempTransform, Employer tracker)
+    private void SendBuildRequest(Flag flag)
     {
-        _employer = tracker;
+        FlagDeleted?.Invoke(flag, this);
+    }
+
+    public void Init(Transform tempTransform, Employer employer)
+    {
+        _employer = employer;        
+
         _unitMover.ChangeStartPosition(tempTransform);
     }
 
@@ -49,23 +74,5 @@ public class Unit : MonoBehaviour
         _unitMover.ChangeStartPosition(tempTransfrom);
 
         IsBusy = false;
-    }
-
-    public void Interact()
-    {
-        if (_unitTaker.TempFlag != null)
-        {
-            _employer.SendBuildRequest(_unitTaker.TempFlag, this);
-            _unitTaker.ClearFlag();
-        }
-        else if (_unitTaker.TempShelter != null)
-        {
-            _unitTaker.PutGold();
-        }
-        else if (_unitTaker.TempResource != null)
-        {
-            _unitTaker.TakeGold();
-            _unitMover.MoveBack();
-        }
     }
 }

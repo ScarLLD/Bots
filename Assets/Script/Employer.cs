@@ -13,7 +13,7 @@ public class Employer : MonoBehaviour
 
     private bool _isInterecting = false;
     private UnitSpawner _unitSpawner;
-    private ResourcesStorage _resourceChooser;
+    private ResourcesStorage _resourcesStorage;
     private WaitForSeconds _wait;
     private List<Unit> _units;
     private Flag _flag;
@@ -31,14 +31,14 @@ public class Employer : MonoBehaviour
         _wait = new WaitForSeconds(_timeBetwenGrub);
     }
 
-    private void Start()
-    {
-        StartCoroutine(Interect());
-    }
-
     public void Init(ResourcesStorage resourcesStorage)
     {
-        _resourceChooser = resourcesStorage;
+        _resourcesStorage = resourcesStorage;
+    }
+
+    public void SendUnitsWork()
+    {
+        StartCoroutine(Interect());
     }
 
     public void SendBuildRequest(Flag flag, Unit unit)
@@ -49,6 +49,8 @@ public class Employer : MonoBehaviour
     public bool TryGetUnit(out Unit unit)
     {
         unit = _units.FirstOrDefault(unit => unit.IsBusy == false);
+
+        Debug.Log(_units.Where(unit => unit.IsBusy == false).ToList().Count());
         return unit != null;
     }
 
@@ -83,7 +85,7 @@ public class Employer : MonoBehaviour
                     unit.ComeFlag(_flag);
                     _flag = null;
                 }
-                else if (_resourceChooser.TryGetResource(out Resource resource))
+                else if (_resourcesStorage.TryGetResource(out Resource resource))
                 {
                     unit.StartGrub(resource);
                 }

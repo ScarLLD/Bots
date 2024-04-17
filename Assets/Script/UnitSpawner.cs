@@ -4,24 +4,18 @@ using UnityEngine;
 [RequireComponent(typeof(Employer))]
 public class UnitSpawner : MonoBehaviour
 {
-    [SerializeField] private int _startUnitsCount;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private Unit _unitPrefab;
 
-    private Employer _tracker;
+    private Employer _employer;
 
     public Queue<Transform> SpawnPoints { get; private set; }
 
     private void Awake()
     {
-        _tracker = GetComponent<Employer>();
+        _employer = GetComponent<Employer>();
 
         InitSpawnPoints();
-    }
-
-    private void Start()
-    {
-        GenerateUnits();
     }
 
     public void TakeSpawnPoint(Transform spawnPoint)
@@ -34,14 +28,14 @@ public class UnitSpawner : MonoBehaviour
         Transform tempTransform = SpawnPoints.Dequeue();
 
         Unit unit = Instantiate(_unitPrefab, tempTransform.position, Quaternion.identity, transform);
-        unit.Init(tempTransform, _tracker);
+        unit.Init(tempTransform, _employer);
 
-        _tracker.TakeUnit(unit);
+        _employer.TakeUnit(unit);
     }
 
     public void TakeUnit(Unit unit)
     {
-        _tracker.TakeUnit(unit);
+        _employer.TakeUnit(unit);
 
         unit.transform.parent = transform;
         unit.ChangeBase(SpawnPoints.Dequeue());
@@ -54,14 +48,6 @@ public class UnitSpawner : MonoBehaviour
         for (int i = 0; i < _spawnPointsParent.childCount; i++)
         {
             SpawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
-        }
-    }
-
-    private void GenerateUnits()
-    {
-        for (int i = 0; i < _startUnitsCount && SpawnPoints.Count > 0; i++)
-        {
-            SpawnUnit();
         }
     }
 }

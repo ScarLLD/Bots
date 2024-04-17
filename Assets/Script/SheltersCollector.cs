@@ -2,18 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+[RequireComponent(typeof(ResourcesStorage))]
 public class SheltersCollector : MonoBehaviour
 {
-    [SerializeField] private int _startUnitsCount;
     [SerializeField] private int _shelterPrice;
     [SerializeField] private int _unitPrice;
     [SerializeField] private Wallet _wallet;
     [SerializeField] private ParticleSystem _particleShelterPrefab;
     [SerializeField] private ResourceSpawner _resourceSpawner;
+    [SerializeField] private ResourcesStorage _resourcesStorage;
     [SerializeField] private Shelter _shelterPrefab;
     [SerializeField] private Vector3 _particleRotation;
+    [SerializeField] private Vector3 _firstBasePosition;
 
-    private ResourcesStorage _resourcesStorage;
     private List<Shelter> _shelters;
     private List<Flag> _flags;
 
@@ -31,6 +32,8 @@ public class SheltersCollector : MonoBehaviour
 
     private void Awake()
     {
+        _resourcesStorage = GetComponent<ResourcesStorage>();
+
         _shelters = new List<Shelter>();
         _flags = new List<Flag>();
     }
@@ -42,8 +45,7 @@ public class SheltersCollector : MonoBehaviour
             _shelters.Add(transform.GetChild(i).GetComponent<Shelter>());
         }
 
-        Shelter shelter = Instantiate(_shelterPrefab, flag.transform.position, Quaternion.identity, transform);
-        shelter.TakeUnit(Insta)
+        SpawnShelter(_firstBasePosition).SpawnUnit();
     }
 
     public bool TryBuyShelter()
@@ -51,17 +53,29 @@ public class SheltersCollector : MonoBehaviour
         return _wallet.GoldCount >= _shelterPrice * _flags.Count;
     }
 
-    public void SpawnShelter(Flag flag, Unit unit)
+    public void BuildNewShelter(Flag flag, Unit unit)
     {
-        Shelter shelter = Instantiate(_shelterPrefab, flag.transform.position, Quaternion.identity, transform);
-        Instantiate(_particleShelterPrefab, shelter.transform.position,
-            Quaternion.identity).transform.Rotate(_particleRotation); ;
-        shelter.Init(this, _resourcesStorage);
+        Shelter shelter = SpawnShelter(flag.transform.position);
+
         shelter.TakeUnit(unit);
-        _shelters.Add(shelter);
+
         _wallet.DecreaseResources(_shelterPrice);
+
         _flags.Remove(flag);
         Destroy(flag.gameObject);
+    }
+
+    private Shelter SpawnShelter(Vector3 spawnPosition)
+    {
+        Shelter shelter = Instantiate(_shelterPrefab, spawnPosition, Quaternion.identity, transform);
+        shelter.Init(this, _resourcesStorage, _resourceSpawner);
+
+        Instantiate(_particleShelterPrefab, shelter.transform.position,
+            Quaternion.identity).transform.Rotate(_particleRotation); ;
+
+        _shelters.Add(shelter);
+
+        return shelter;
     }
 
     public void TakeFlag(Flag flag)

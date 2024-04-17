@@ -5,6 +5,11 @@ public class ResourcesStorage : MonoBehaviour
 {
     private List<Resource> _resources;
 
+    private void Awake()
+    {
+        _resources = new List<Resource>();
+    }
+
     public bool TryGetResource(out Resource resource)
     {
         resource = null;

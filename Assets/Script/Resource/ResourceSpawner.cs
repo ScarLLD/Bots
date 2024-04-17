@@ -9,12 +9,12 @@ using Random = UnityEngine.Random;
 public class ResourceSpawner : MonoBehaviour
 {
     [SerializeField] private float _timeBetwenSpawn;
+    [SerializeField] private ResourcesStorage _resourceStorage;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private ParticlePool _particlePool;
     [SerializeField] private LayerMask _resourceLayer;
 
     private ResourcePool _resourcePool;
-    private ResourcesStorage _resourceStorage;
     private WaitForSeconds _wait;
     private List<Transform> _spawnPoints;
 
@@ -23,7 +23,6 @@ public class ResourceSpawner : MonoBehaviour
     private void Awake()
     {
         _resourcePool = GetComponent<ResourcePool>();
-        _resourceStorage = GetComponent<ResourcesStorage>();
 
         _spawnPoints = new List<Transform>();
         _wait = new WaitForSeconds(_timeBetwenSpawn);
@@ -44,7 +43,7 @@ public class ResourceSpawner : MonoBehaviour
         SpawnParticle(resource.transform.position);
 
         ResourceCollected?.Invoke();
-    }   
+    }
 
     private void SpawnParticle(Vector3 spawnPosition)
     {

@@ -1,18 +1,19 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Unit))]
 public class UnitMover : MonoBehaviour
 {
-    private Unit _unit;
     private float _speed;
     private bool _isMove = false;
+
+    public event Action Arrived;
 
     public Transform StartTransfrom { get; private set; }
 
     private void Awake()
-    {
-        _unit = GetComponent<Unit>();
+    {   
         _speed = transform.parent.GetComponent<Employer>().Speed;
     }
 
@@ -48,6 +49,6 @@ public class UnitMover : MonoBehaviour
             yield return null;
         }
 
-        _unit.Interact();
+        Arrived?.Invoke();
     }
 }
