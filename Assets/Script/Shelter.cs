@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Shelter : MonoBehaviour
@@ -6,33 +5,47 @@ public class Shelter : MonoBehaviour
     [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Employer _employer;
 
-    private SheltersCollector _sheltersCollector;
+    private SheltersSpawner _sheltersCollector;
+    private FlagStorage _flagStorage;
+    private Wallet _wallet;
     private ResourceSpawner _resourceSpawner;
+    private ResourcesStorage _resourcesStorage;
 
     public Flag Flag { get; private set; }
     public UnitSpawner UnitSpawner => _unitSpawner;
     public int UnitsCount => _employer.UnitsCount;
-    public bool TryBuyShelter => _sheltersCollector.TryBuyShelter();
     public void SpawnUnit() => _unitSpawner.SpawnUnit();
+
+    private void Awake()
+    {
+        _employer.Init(_resourcesStorage, _flagStorage, _wallet);
+        _employer.SendUnitsWork();
+    }
+
+    private void OnEnable()
+    {
+        _employer.ResourceDelivered += TransferResource;
+    }
 
     private void OnDisable()
     {
-        _employer.ResourceDelievered -= _resourceSpawner.CollectResource;
+        _employer.ResourceDelivered -= TransferResource;
     }
 
-    public void Init(SheltersCollector sheltersCollector, ResourcesStorage resourcesStorage, ResourceSpawner resourceSpawner)
+    public void Init(SheltersSpawner sheltersCollector, ResourcesStorage resourcesStorage, ResourceSpawner resourceSpawner)
     {
         _sheltersCollector = sheltersCollector;
         _resourceSpawner = resourceSpawner;
-        _employer.ResourceDelievered += _resourceSpawner.CollectResource;
+        _resourcesStorage = resourcesStorage;
+    }
 
-        _employer.Init(resourcesStorage);
-        _employer.SendUnitsWork();
+    private void TransferResource(Resource resource)
+    {
+        _resourceSpawner.CollectResource(resource);
     }
 
     public void SendBuildRequest(Flag flag)
     {
-        _sheltersCollector.TakeFlag(flag);
         _employer.TakeFlag(flag);
 
         Flag = flag;
@@ -41,13 +54,6 @@ public class Shelter : MonoBehaviour
     public void TakeUnit(Unit unit)
     {
         _unitSpawner.TakeUnit(unit);
-    }
-
-    public void BuildBase(Flag flag, Unit unit)
-    {
-        _sheltersCollector.BuildNewShelter(flag, unit);
-
-        Flag = null;
     }
 
     public void BuyUnit()

@@ -18,6 +18,6 @@ public class ScoreView : MonoBehaviour
 
     private void OnScoreChanged()
     {
-        _takenGoldCount.text = _wallet.GoldCount.ToString();
+        _takenGoldCount.text = _wallet.ResourceCount.ToString();
     }
 }

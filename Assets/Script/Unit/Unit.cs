@@ -35,11 +35,6 @@ public class Unit : MonoBehaviour
         _unitTaker = GetComponent<UnitTaker>();
     }
 
-    private void SendBuildRequest(Flag flag)
-    {
-        FlagDeleted?.Invoke(flag, this);
-    }
-
     public void Init(Transform tempTransform, Employer employer)
     {
         _employer = employer;        
@@ -74,5 +69,10 @@ public class Unit : MonoBehaviour
         _unitMover.ChangeStartPosition(tempTransfrom);
 
         IsBusy = false;
+    }
+
+    private void SendBuildRequest(Flag flag)
+    {
+        FlagDeleted?.Invoke(flag, this);
     }
 }

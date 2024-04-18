@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(SheltersCollector))]
-public class SheltersBuilder : MonoBehaviour
+[RequireComponent(typeof(SheltersSpawner))]
+public class FlagSetter : MonoBehaviour
 {
     [SerializeField] private Flag _flagPrefab;
     [SerializeField] private Camera _camera;
@@ -13,6 +14,8 @@ public class SheltersBuilder : MonoBehaviour
     private Collider[] _colliders;
     private Ray _ray;
     private bool _isWork;
+
+    public event Action<Flag> FlagInstalled;
 
     private void Update()
     {
@@ -25,7 +28,7 @@ public class SheltersBuilder : MonoBehaviour
                     StartCoroutine(ShowTemplate(shelter));
     }
 
-    private void SetTemplate(Shelter shelter, Flag flag)
+    private void SetFlag(Shelter shelter, Flag flag)
     {
         if (shelter.Flag != null)
         {
@@ -35,6 +38,8 @@ public class SheltersBuilder : MonoBehaviour
         {
             Flag tempFlag = Instantiate(_flagPrefab, flag.transform.position,
                 flag.transform.rotation, transform);
+
+            FlagInstalled?.Invoke(flag);
 
             shelter.SendBuildRequest(tempFlag);
         }
@@ -72,7 +77,7 @@ public class SheltersBuilder : MonoBehaviour
                 {
                     flagCollider.enabled = true;
 
-                    SetTemplate(shelter, flag);                    
+                    SetFlag(shelter, flag);
 
                     _isWork = false;
                 }

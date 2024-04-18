@@ -12,13 +12,15 @@ public class Employer : MonoBehaviour
     [SerializeField] private Shelter _shelter;
 
     private bool _isInterecting = false;
+    private Wallet _wallet;
     private UnitSpawner _unitSpawner;
     private ResourcesStorage _resourcesStorage;
+    private FlagStorage _flagStorage;
+    private SheltersBuyer _shelterBuyer;
     private WaitForSeconds _wait;
     private List<Unit> _units;
-    private Flag _flag;
 
-    public event Action<Resource> ResourceDelievered;
+    public event Action<Resource> ResourceDelivered;
 
     public float Speed => _speed;
     public int UnitsCount => _units.Count;
@@ -31,19 +33,16 @@ public class Employer : MonoBehaviour
         _wait = new WaitForSeconds(_timeBetwenGrub);
     }
 
-    public void Init(ResourcesStorage resourcesStorage)
+    public void Init(ResourcesStorage resourcesStorage, FlagStorage flagStorage, Wallet wallet)
     {
         _resourcesStorage = resourcesStorage;
+        _flagStorage = flagStorage;
+        _wallet = wallet;
     }
 
     public void SendUnitsWork()
     {
         StartCoroutine(Interect());
-    }
-
-    public void SendBuildRequest(Flag flag, Unit unit)
-    {
-        _shelter.BuildBase(flag, unit);
     }
 
     public bool TryGetUnit(out Unit unit)
@@ -56,17 +55,12 @@ public class Employer : MonoBehaviour
 
     public void ConfirmDelivery(Resource resource)
     {
-        ResourceDelievered?.Invoke(resource);
+        ResourceDelivered?.Invoke(resource);
     }
 
     public void TakeUnit(Unit unit)
     {
         _units.Add(unit);
-    }
-
-    public void TakeFlag(Flag flag)
-    {
-        _flag = flag;
     }
 
     private IEnumerator Interect()
@@ -77,13 +71,13 @@ public class Employer : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_flag != null && _units.Count > _minUnitsCount && _shelter.TryBuyShelter)
+                if (_flagStorage.TryTakeFlag(out Flag flag) && _units.Count > _minUnitsCount
+                    && _shelterBuyer.GetShelterPrice > _wallet.ResourceCount)
                 {
                     _unitSpawner.TakeSpawnPoint(unit.StartTransform);
                     _units.Remove(unit);
 
-                    unit.ComeFlag(_flag);
-                    _flag = null;
+                    unit.ComeFlag(flag);
                 }
                 else if (_resourcesStorage.TryGetResource(out Resource resource))
                 {
