@@ -14,15 +14,15 @@ public class Wallet : MonoBehaviour
     private void OnEnable()
     {
         _resourceSpawner.ResourceCollected += CollectResource;
-        _sheltersBuyer.ShelterBought += DecreaseResources;
-        _unitsBuyer.UnitBought += DecreaseResources;
+        _sheltersBuyer.ShelterSpawned += DecreaseResources;
+        _unitsBuyer.UnitSpawned += DecreaseResources;
     }
 
     private void OnDisable()
     {
         _resourceSpawner.ResourceCollected -= CollectResource;
-        _sheltersBuyer.ShelterBought -= DecreaseResources;
-        _unitsBuyer.UnitBought -= DecreaseResources;
+        _sheltersBuyer.ShelterSpawned -= DecreaseResources;
+        _unitsBuyer.UnitSpawned -= DecreaseResources;
     }
 
     public void DecreaseResources(int price)

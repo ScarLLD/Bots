@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlagStorage : MonoBehaviour
+public class FlagsStorage : MonoBehaviour
 {
     [SerializeField] private FlagSetter _flagSetter;
     [SerializeField] private SheltersSpawner _sheltersSpawner;
@@ -13,13 +13,11 @@ public class FlagStorage : MonoBehaviour
     private void OnEnable()
     {
         _flagSetter.FlagInstalled += TakeFlag;
-        _sheltersSpawner.FlagRemoved += RemoveFlag;
     }
 
     private void OnDisable()
     {
         _flagSetter.FlagInstalled -= TakeFlag;
-        _sheltersSpawner.FlagRemoved -= RemoveFlag;
     }
 
     private void Awake()
@@ -27,7 +25,7 @@ public class FlagStorage : MonoBehaviour
         Flags = new Queue<Flag>();
     }
 
-    private bool TryTakeFlag(out Flag flag)
+    public bool TryGetFlag(out Flag flag)
     {
         flag = null;
 

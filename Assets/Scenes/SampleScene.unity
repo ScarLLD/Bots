@@ -333,6 +333,71 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 256671927}
   m_CullTransparentMesh: 1
+--- !u!1 &261222469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 261222472}
+  - component: {fileID: 261222471}
+  - component: {fileID: 261222470}
+  m_Layer: 0
+  m_Name: Buyers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &261222470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261222469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8bb84001f3933741a43e891dab9ab7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _unitPrice: 2
+  _sheltersSpawner: {fileID: 271030306}
+  _flagStorage: {fileID: 271030309}
+  _wallet: {fileID: 1337701352}
+--- !u!114 &261222471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261222469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71d1895d7f3d17c429852fd1a81b55e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shelterPrice: 3
+  _sheltersSpawner: {fileID: 271030306}
+  _flagsStorage: {fileID: 271030309}
+  _wallet: {fileID: 1337701352}
+--- !u!4 &261222472
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 261222469}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11.55995, y: -4.2951164, z: 4.1934795}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &271030304
 GameObject:
   m_ObjectHideFlags: 0
@@ -343,8 +408,9 @@ GameObject:
   m_Component:
   - component: {fileID: 271030305}
   - component: {fileID: 271030306}
-  - component: {fileID: 271030307}
   - component: {fileID: 271030308}
+  - component: {fileID: 271030307}
+  - component: {fileID: 271030309}
   m_Layer: 8
   m_Name: Shelters
   m_TagString: Untagged
@@ -379,15 +445,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a8cb6c268334f4ba19ff0ffe2f85f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shelterPrice: 5
-  _unitPrice: 3
   _wallet: {fileID: 1337701352}
-  _particleShelterPrefab: {fileID: 8594713877718351816, guid: 345939e2ed2ebe149b1b2b1b628cd026, type: 3}
-  _resourceSpawner: {fileID: 240901791}
-  _shelterPrefab: {fileID: 7396834255855234792, guid: cadaab0216d81ef4e8a08e3765a7a87e, type: 3}
   _particleRotation: {x: -90, y: 0, z: 0}
   _firstBasePosition: {x: 0, y: 0, z: 0}
+  _resourceSpawner: {fileID: 240901791}
   _resourcesStorage: {fileID: 271030308}
+  _sheltersBuyer: {fileID: 261222471}
+  _flagStorage: {fileID: 271030309}
+  _particleShelterPrefab: {fileID: 8594713877718351816, guid: 345939e2ed2ebe149b1b2b1b628cd026, type: 3}
+  _shelterPrefab: {fileID: 7396834255855234792, guid: cadaab0216d81ef4e8a08e3765a7a87e, type: 3}
 --- !u!114 &271030307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -418,6 +484,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63c7138b12d4e484398ad07b27edacee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &271030309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271030304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4d1ad254e430074b8081f0a4913b3ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _flagSetter: {fileID: 271030307}
+  _sheltersSpawner: {fileID: 271030306}
 --- !u!1 &649558399
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,6 +1403,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _resourceSpawner: {fileID: 240901791}
+  _unitsBuyer: {fileID: 261222470}
+  _sheltersBuyer: {fileID: 261222471}
 --- !u!1 &1352494115
 GameObject:
   m_ObjectHideFlags: 0
@@ -1806,8 +1888,9 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 1822710251}
   - {fileID: 1364693267}
-  - {fileID: 240901792}
   - {fileID: 1214130890}
+  - {fileID: 240901792}
+  - {fileID: 261222472}
   - {fileID: 271030305}
   - {fileID: 1337701349}
   - {fileID: 1799738670}

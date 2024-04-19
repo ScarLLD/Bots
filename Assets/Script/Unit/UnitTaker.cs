@@ -72,8 +72,6 @@ public class UnitTaker : MonoBehaviour
 
     public void Interact()
     {
-        Debug.Log("Interect");
-
         if (TempFlag != null)
         {
             ClearFlag();

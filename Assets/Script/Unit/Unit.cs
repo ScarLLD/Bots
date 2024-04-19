@@ -33,11 +33,13 @@ public class Unit : MonoBehaviour
     {
         _unitMover = GetComponent<UnitMover>();
         _unitTaker = GetComponent<UnitTaker>();
+
+        IsBusy = false;
     }
 
     public void Init(Transform tempTransform, Employer employer)
     {
-        _employer = employer;        
+        _employer = employer;
 
         _unitMover.ChangeStartPosition(tempTransform);
     }

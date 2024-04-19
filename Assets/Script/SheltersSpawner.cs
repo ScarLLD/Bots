@@ -6,11 +6,13 @@ using System;
 [RequireComponent(typeof(ResourcesStorage))]
 public class SheltersSpawner : MonoBehaviour
 {
+    [SerializeField] private Wallet _wallet;
     [SerializeField] private Vector3 _particleRotation;
     [SerializeField] private Vector3 _firstBasePosition;
     [SerializeField] private ResourceSpawner _resourceSpawner;
     [SerializeField] private ResourcesStorage _resourcesStorage;
-    [SerializeField] private FlagStorage _flagStorage;
+    [SerializeField] private SheltersBuyer _sheltersBuyer;
+    [SerializeField] private FlagsStorage _flagStorage;
     [SerializeField] private ParticleSystem _particleShelterPrefab;
     [SerializeField] private Shelter _shelterPrefab;
 
@@ -18,11 +20,6 @@ public class SheltersSpawner : MonoBehaviour
 
     public event Action<Flag> FlagRemoved;
     public event Action ShelterBuilded;
-
-    private void OnEnable()
-    {
-        
-    }
 
     private void Awake()
     {
@@ -33,13 +30,11 @@ public class SheltersSpawner : MonoBehaviour
     private void Start()
     {
         SpawnShelter(_firstBasePosition).SpawnUnit();
-    }    
+    }
 
     public bool TryChooseShelter(out Shelter shelter)
     {
-        shelter = null;
-
-        _shelters.FirstOrDefault(shelter => shelter.UnitSpawner.SpawnPoints.Count() > 0);
+        shelter = _shelters.FirstOrDefault(shelter => shelter.UnitSpawner.SpawnPoints.Count() > 0);
 
         return shelter != null;
     }
@@ -56,7 +51,7 @@ public class SheltersSpawner : MonoBehaviour
     private Shelter SpawnShelter(Vector3 spawnPosition)
     {
         Shelter shelter = Instantiate(_shelterPrefab, spawnPosition, Quaternion.identity, transform);
-        shelter.Init(this, _resourcesStorage, _resourceSpawner);
+        shelter.Init(_resourceSpawner, _resourcesStorage, _sheltersBuyer);
 
         Instantiate(_particleShelterPrefab, shelter.transform.position,
             Quaternion.identity).transform.Rotate(_particleRotation); ;

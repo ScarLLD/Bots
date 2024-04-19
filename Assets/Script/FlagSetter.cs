@@ -39,7 +39,7 @@ public class FlagSetter : MonoBehaviour
             Flag tempFlag = Instantiate(_flagPrefab, flag.transform.position,
                 flag.transform.rotation, transform);
 
-            FlagInstalled?.Invoke(flag);
+            FlagInstalled?.Invoke(tempFlag);
 
             shelter.SendBuildRequest(tempFlag);
         }

@@ -4,25 +4,33 @@ using UnityEngine;
 public class SheltersBuyer : MonoBehaviour
 {
     [SerializeField] private int _shelterPrice;
+    [SerializeField] private SheltersSpawner _sheltersSpawner;
+    [SerializeField] private FlagsStorage _flagsStorage;
+    [SerializeField] private Wallet _wallet;
 
-    private SheltersSpawner _shelterSpawner;
-
-    public event Action<int> ShelterBought;
+    public event Action<int> ShelterSpawned;
 
     public int GetShelterPrice => _shelterPrice;
 
     private void OnEnable()
     {
-        _shelterSpawner.ShelterBuilded += BuyShelter;
+        //_wallet.ScoreChanged += BuyShelter;
+        _sheltersSpawner.ShelterBuilded += BuyShelter;
     }
 
     private void OnDisable()
     {
-        _shelterSpawner.ShelterBuilded -= BuyShelter;
+        //_wallet.ScoreChanged -= BuyShelter;
+        _sheltersSpawner.ShelterBuilded -= BuyShelter;
+    }
+
+    public bool TryConfirmBuyPossibility()
+    {
+        return _wallet.ResourceCount - _shelterPrice * _flagsStorage.Flags.Count >= _shelterPrice;
     }
 
     private void BuyShelter()
     {
-        ShelterBought?.Invoke(_shelterPrice);
+        ShelterSpawned?.Invoke(_shelterPrice);
     }
 }

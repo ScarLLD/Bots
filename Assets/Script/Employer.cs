@@ -12,13 +12,12 @@ public class Employer : MonoBehaviour
     [SerializeField] private Shelter _shelter;
 
     private bool _isInterecting = false;
-    private Wallet _wallet;
+    private Flag _flag;
+    private List<Unit> _units;
     private UnitSpawner _unitSpawner;
     private ResourcesStorage _resourcesStorage;
-    private FlagStorage _flagStorage;
-    private SheltersBuyer _shelterBuyer;
+    private SheltersBuyer _sheltersBuyer;
     private WaitForSeconds _wait;
-    private List<Unit> _units;
 
     public event Action<Resource> ResourceDelivered;
 
@@ -33,23 +32,21 @@ public class Employer : MonoBehaviour
         _wait = new WaitForSeconds(_timeBetwenGrub);
     }
 
-    public void Init(ResourcesStorage resourcesStorage, FlagStorage flagStorage, Wallet wallet)
-    {
-        _resourcesStorage = resourcesStorage;
-        _flagStorage = flagStorage;
-        _wallet = wallet;
-    }
-
-    public void SendUnitsWork()
+    private void Start()
     {
         StartCoroutine(Interect());
+    }
+
+    public void Init(ResourcesStorage resourcesStorage, SheltersBuyer sheltersBuyer)
+    {
+        _resourcesStorage = resourcesStorage;
+        _sheltersBuyer = sheltersBuyer;
     }
 
     public bool TryGetUnit(out Unit unit)
     {
         unit = _units.FirstOrDefault(unit => unit.IsBusy == false);
 
-        Debug.Log(_units.Where(unit => unit.IsBusy == false).ToList().Count());
         return unit != null;
     }
 
@@ -63,6 +60,11 @@ public class Employer : MonoBehaviour
         _units.Add(unit);
     }
 
+    public void TakeFlag(Flag flag)
+    {
+        _flag = flag;
+    }
+
     private IEnumerator Interect()
     {
         _isInterecting = true;
@@ -71,13 +73,14 @@ public class Employer : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_flagStorage.TryTakeFlag(out Flag flag) && _units.Count > _minUnitsCount
-                    && _shelterBuyer.GetShelterPrice > _wallet.ResourceCount)
+                if (_flag != null && _units.Count > _minUnitsCount)
+                //&& _sheltersBuyer.TryConfirmBuyPossibility())
                 {
                     _unitSpawner.TakeSpawnPoint(unit.StartTransform);
                     _units.Remove(unit);
 
-                    unit.ComeFlag(flag);
+                    unit.ComeFlag(_flag);
+                    _flag = null;
                 }
                 else if (_resourcesStorage.TryGetResource(out Resource resource))
                 {
