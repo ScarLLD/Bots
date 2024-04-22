@@ -1,44 +1,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Employer))]
 public class UnitSpawner : MonoBehaviour
 {
-    [SerializeField] private int _unitsCount;
+    [SerializeField] private int _speed;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private Unit _unitPrefab;
 
-    private Queue<Transform> _spawnPoints;
-    private Tracker _tracker;
+    private Employer _employer;
 
-    private void Start()
+    public Queue<Transform> SpawnPoints { get; private set; }
+
+    private void Awake()
     {
-        _tracker = GetComponent<Tracker>();
+        _employer = GetComponent<Employer>();
 
-        GenerateSpawnPoint();
-
-        GenerateUnits();
-    }
-
-    private void GenerateSpawnPoint()
-    {
-        _spawnPoints = new Queue<Transform>();
+        SpawnPoints = new Queue<Transform>();
 
         for (int i = 0; i < _spawnPointsParent.childCount; i++)
         {
-            _spawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
+            SpawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
         }
     }
 
-    private void GenerateUnits()
+    public void TakeSpawnPoint(Transform spawnPoint)
     {
-        int pointsCount = _spawnPoints.Count;
+        SpawnPoints.Enqueue(spawnPoint);
+    }
 
-        for (int i = 0; i < _unitsCount && i < pointsCount; i++)
-        {
-            Unit unit = Instantiate(_unitPrefab, _spawnPoints.
-                Dequeue().transform.position, Quaternion.identity, transform);
+    public void SpawnUnit()
+    {
+        Transform tempTransform = SpawnPoints.Dequeue();
 
-            _tracker.TakeUnit(unit);
-        }
+        Unit unit = Instantiate(_unitPrefab, tempTransform.position, Quaternion.identity, transform);
+        unit.Init(tempTransform, _employer, _speed);
+
+        _employer.TakeUnit(unit);
+    }
+
+    public void TakeUnit(Unit unit)
+    {
+        _employer.TakeUnit(unit);
+
+        unit.transform.parent = transform;
+        unit.ChangeBase(SpawnPoints.Dequeue());
     }
 }
