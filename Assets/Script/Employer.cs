@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class Employer : MonoBehaviour
 {
-    [SerializeField] private float _speed;
     [SerializeField] private int _minUnitsCount;
     [SerializeField] private float _timeBetwenGrub;
     [SerializeField] private Shelter _shelter;
@@ -20,8 +19,8 @@ public class Employer : MonoBehaviour
     private WaitForSeconds _wait;
 
     public event Action<Resource> ResourceDelivered;
+    public event Action<Unit, Flag> UnitCameFlag;
 
-    public float Speed => _speed;
     public int UnitsCount => _units.Count;
 
     private void Awake()
@@ -65,6 +64,11 @@ public class Employer : MonoBehaviour
         _flag = flag;
     }
 
+    public void NotifyShelter(Unit unit, Flag flag)
+    {
+        UnitCameFlag?.Invoke(unit, flag);
+    }
+
     private IEnumerator Interect()
     {
         _isInterecting = true;
@@ -73,12 +77,13 @@ public class Employer : MonoBehaviour
         {
             if (TryGetUnit(out Unit unit))
             {
-                if (_flag != null && _units.Count > _minUnitsCount)
-                //&& _sheltersBuyer.TryConfirmBuyPossibility())
+                if (_flag != null && _units.Count >= _minUnitsCount
+                && _sheltersBuyer.TryConfirmBuyPossibility())
                 {
                     _unitSpawner.TakeSpawnPoint(unit.StartTransform);
                     _units.Remove(unit);
 
+                    Debug.Log("ComeFlag");
                     unit.ComeFlag(_flag);
                     _flag = null;
                 }

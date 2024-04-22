@@ -14,19 +14,17 @@ public class SheltersBuyer : MonoBehaviour
 
     private void OnEnable()
     {
-        //_wallet.ScoreChanged += BuyShelter;
         _sheltersSpawner.ShelterBuilded += BuyShelter;
     }
 
     private void OnDisable()
     {
-        //_wallet.ScoreChanged -= BuyShelter;
         _sheltersSpawner.ShelterBuilded -= BuyShelter;
     }
 
     public bool TryConfirmBuyPossibility()
     {
-        return _wallet.ResourceCount - _shelterPrice * _flagsStorage.Flags.Count >= _shelterPrice;
+        return _wallet.ResourceCount - _shelterPrice * _flagsStorage.Flags.Count >= 0;
     }
 
     private void BuyShelter()

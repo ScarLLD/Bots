@@ -8,8 +8,6 @@ public class Unit : MonoBehaviour
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
 
-    public event Action<Flag, Unit> FlagDeleted;
-
     public Transform StartTransform => _unitMover.StartTransfrom;
     public bool IsBusy { get; private set; }
 
@@ -18,7 +16,7 @@ public class Unit : MonoBehaviour
         _unitMover.Arrived += _unitTaker.Interact;
         _unitTaker.ResourceTaken += _unitMover.MoveBack;
         _unitTaker.ResourceDelivered += ConfirmDelivery;
-        _unitTaker.FlagDeleted += SendBuildRequest;
+        _unitTaker.CameFlag += NotifyEmployer;
     }
 
     private void OnDisable()
@@ -26,7 +24,7 @@ public class Unit : MonoBehaviour
         _unitMover.Arrived -= _unitTaker.Interact;
         _unitTaker.ResourceTaken -= _unitMover.MoveBack;
         _unitTaker.ResourceDelivered -= ConfirmDelivery;
-        _unitTaker.FlagDeleted -= SendBuildRequest;
+        _unitTaker.CameFlag -= NotifyEmployer;
     }
 
     private void Awake()
@@ -34,13 +32,16 @@ public class Unit : MonoBehaviour
         _unitMover = GetComponent<UnitMover>();
         _unitTaker = GetComponent<UnitTaker>();
 
+        
+
         IsBusy = false;
     }
 
-    public void Init(Transform tempTransform, Employer employer)
+    public void Init(Transform tempTransform, Employer employer, int speed)
     {
         _employer = employer;
 
+        _unitMover.Init(speed);
         _unitMover.ChangeStartPosition(tempTransform);
     }
 
@@ -73,8 +74,8 @@ public class Unit : MonoBehaviour
         IsBusy = false;
     }
 
-    private void SendBuildRequest(Flag flag)
+    private void NotifyEmployer(Flag flag)
     {
-        FlagDeleted?.Invoke(flag, this);
+        _employer.NotifyShelter(this, flag);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class UnitsBuyer : MonoBehaviour
 {
     [SerializeField] private int _unitPrice;
-    [SerializeField] private SheltersSpawner _sheltersSpawner;
+    [SerializeField] private SheltersStorage _sheltersStorage;
     [SerializeField] private FlagsStorage _flagStorage;
     [SerializeField] private Wallet _wallet;
 
@@ -24,8 +24,7 @@ public class UnitsBuyer : MonoBehaviour
     {
         if (_flagStorage.Flags.Count == 0 && _wallet.ResourceCount >= _unitPrice)
         {
-
-            if (_sheltersSpawner.TryChooseShelter(out Shelter shelter))
+            if (_sheltersStorage.TryChooseShelter(out Shelter shelter))
             {
                 shelter.SpawnUnit();
 

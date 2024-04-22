@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Employer))]
 public class UnitSpawner : MonoBehaviour
 {
+    [SerializeField] private int _speed;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private Unit _unitPrefab;
 
@@ -15,7 +16,12 @@ public class UnitSpawner : MonoBehaviour
     {
         _employer = GetComponent<Employer>();
 
-        InitSpawnPoints();
+        SpawnPoints = new Queue<Transform>();
+
+        for (int i = 0; i < _spawnPointsParent.childCount; i++)
+        {
+            SpawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
+        }
     }
 
     public void TakeSpawnPoint(Transform spawnPoint)
@@ -28,7 +34,7 @@ public class UnitSpawner : MonoBehaviour
         Transform tempTransform = SpawnPoints.Dequeue();
 
         Unit unit = Instantiate(_unitPrefab, tempTransform.position, Quaternion.identity, transform);
-        unit.Init(tempTransform, _employer);
+        unit.Init(tempTransform, _employer, _speed);
 
         _employer.TakeUnit(unit);
     }
@@ -39,15 +45,5 @@ public class UnitSpawner : MonoBehaviour
 
         unit.transform.parent = transform;
         unit.ChangeBase(SpawnPoints.Dequeue());
-    }
-
-    private void InitSpawnPoints()
-    {
-        SpawnPoints = new Queue<Transform>();
-
-        for (int i = 0; i < _spawnPointsParent.childCount; i++)
-        {
-            SpawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
-        }
     }
 }

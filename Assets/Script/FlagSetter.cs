@@ -9,7 +9,7 @@ public class FlagSetter : MonoBehaviour
     [SerializeField] private Flag _flagPrefab;
     [SerializeField] private Camera _camera;
     [SerializeField] private int _rayDirection;
-    [SerializeField] private LayerMask _hitMask;
+    [SerializeField] private LayerMask _hitLayer;
 
     private Collider[] _colliders;
     private Ray _ray;
@@ -41,7 +41,7 @@ public class FlagSetter : MonoBehaviour
 
             FlagInstalled?.Invoke(tempFlag);
 
-            shelter.SendBuildRequest(tempFlag);
+            shelter.GiveBuildTask(tempFlag);
         }
     }
 
@@ -59,7 +59,7 @@ public class FlagSetter : MonoBehaviour
 
         while (_isWork)
         {
-            if (Physics.Raycast(_ray, out RaycastHit hit, _rayDirection, _hitMask))
+            if (Physics.Raycast(_ray, out RaycastHit hit, _rayDirection, _hitLayer))
             {
                 flag.transform.position = new Vector3(hit.point.x,
                     positionMultiple.y, hit.point.z);

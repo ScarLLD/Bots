@@ -10,7 +10,7 @@ public class UnitTaker : MonoBehaviour
 
     public event Action ResourceTaken;
     public event Action<Resource> ResourceDelivered;
-    public event Action<Flag> FlagDeleted;
+    public event Action<Flag> CameFlag;
 
     public Flag TempFlag { get; private set; }
     public Shelter TempShelter { get; private set; }
@@ -37,12 +37,15 @@ public class UnitTaker : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        TempShelter = null;
+        if (other.TryGetComponent(out Shelter shelter))
+        {
+            TempShelter = null;
+        }
     }
 
     public void ClearFlag()
     {
-        FlagDeleted?.Invoke(TempFlag);
+        CameFlag?.Invoke(TempFlag);
 
         TempFlag = null;
     }
@@ -62,12 +65,12 @@ public class UnitTaker : MonoBehaviour
 
     public void PutGold()
     {
+        TempShelter = null;
+        _targetResource = null;
+
         ResourceDelivered?.Invoke(TempResource);
 
         TempResource = null;
-        TempShelter = null;
-
-        _targetResource = null;
     }
 
     public void Interact()

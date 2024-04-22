@@ -4,7 +4,7 @@ using UnityEngine;
 public class ResourcePool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
-    [SerializeField] private Resource _goldPrefab;
+    [SerializeField] private Resource _resourcePrefab;
 
     public Queue<Resource> Pool { get; private set; }
 
@@ -17,7 +17,7 @@ public class ResourcePool : MonoBehaviour
     {
         if (Pool.Count == 0)
         {
-            return Instantiate(_goldPrefab, transform.position, transform.rotation, _container);            
+            return Instantiate(_resourcePrefab, transform.position, transform.rotation, _container);            
         }
 
         return Pool.Dequeue();

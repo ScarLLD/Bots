@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _container: {fileID: 667745901}
-  _goldPrefab: {fileID: 4235115631740479259, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
+  _resourcePrefab: {fileID: 0}
 --- !u!1 &256671927
 GameObject:
   m_ObjectHideFlags: 0
@@ -364,7 +364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _unitPrice: 2
-  _sheltersSpawner: {fileID: 271030306}
+  _sheltersStorage: {fileID: 0}
   _flagStorage: {fileID: 271030309}
   _wallet: {fileID: 1337701352}
 --- !u!114 &261222471
@@ -408,9 +408,10 @@ GameObject:
   m_Component:
   - component: {fileID: 271030305}
   - component: {fileID: 271030306}
-  - component: {fileID: 271030308}
+  - component: {fileID: 271030310}
   - component: {fileID: 271030307}
   - component: {fileID: 271030309}
+  - component: {fileID: 271030308}
   m_Layer: 8
   m_Name: Shelters
   m_TagString: Untagged
@@ -454,6 +455,7 @@ MonoBehaviour:
   _flagStorage: {fileID: 271030309}
   _particleShelterPrefab: {fileID: 8594713877718351816, guid: 345939e2ed2ebe149b1b2b1b628cd026, type: 3}
   _shelterPrefab: {fileID: 7396834255855234792, guid: cadaab0216d81ef4e8a08e3765a7a87e, type: 3}
+  _sheltersStorage: {fileID: 0}
 --- !u!114 &271030307
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,9 +471,9 @@ MonoBehaviour:
   _flagPrefab: {fileID: 7782327212743613063, guid: ac84359418503a64ba4764cb8de0c20c, type: 3}
   _camera: {fileID: 963194227}
   _rayDirection: 100
-  _hitMask:
+  _hitLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
 --- !u!114 &271030308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -498,6 +500,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _flagSetter: {fileID: 271030307}
   _sheltersSpawner: {fileID: 271030306}
+--- !u!114 &271030310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271030304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3840a55691c8aec43b128948eca4f2e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &649558399
 GameObject:
   m_ObjectHideFlags: 0
@@ -1848,7 +1862,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _container: {fileID: 667745901}
-  _goldPrefab: {fileID: 4235115631740479259, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
+  _resourcePrefab: {fileID: 0}
 --- !u!1 &2143122066
 GameObject:
   m_ObjectHideFlags: 0

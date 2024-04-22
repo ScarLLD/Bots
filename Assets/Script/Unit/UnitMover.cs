@@ -12,9 +12,9 @@ public class UnitMover : MonoBehaviour
 
     public Transform StartTransfrom { get; private set; }
 
-    private void Awake()
-    {   
-        _speed = transform.parent.GetComponent<Employer>().Speed;
+    public void Init(int speed)
+    {
+        _speed = speed;
     }
 
     public void MoveToPoint(Transform target)

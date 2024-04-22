@@ -6,34 +6,34 @@ public class FlagsStorage : MonoBehaviour
     [SerializeField] private FlagSetter _flagSetter;
     [SerializeField] private SheltersSpawner _sheltersSpawner;
 
-    public Queue<Flag> Flags { get; private set; }
-
-    private void TakeFlag(Flag flag) => Flags.Enqueue(flag);
+    public List<Flag> Flags { get; private set; }
 
     private void OnEnable()
     {
         _flagSetter.FlagInstalled += TakeFlag;
+        _sheltersSpawner.FlagRemoved += Remove;
     }
 
     private void OnDisable()
     {
         _flagSetter.FlagInstalled -= TakeFlag;
+        _sheltersSpawner.FlagRemoved -= Remove;
+
     }
 
     private void Awake()
     {
-        Flags = new Queue<Flag>();
+        Flags = new List<Flag>();
     }
 
-    public bool TryGetFlag(out Flag flag)
+    private void TakeFlag(Flag flag)
     {
-        flag = null;
+        Flags.Add(flag);
+    }
 
-        if (Flags.Count > 0)
-        {
-            flag = Flags.Dequeue();
-        }
-
-        return flag != null;
+    private void Remove(Flag flag)
+    {
+        Flags.Remove(flag);
+        Destroy(flag.gameObject);
     }
 }
