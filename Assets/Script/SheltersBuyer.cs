@@ -10,7 +10,6 @@ public class SheltersBuyer : MonoBehaviour
 
     public event Action<int> ShelterSpawned;
 
-    public int GetShelterPrice => _shelterPrice;
 
     private void OnEnable()
     {
