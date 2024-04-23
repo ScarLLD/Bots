@@ -4,11 +4,9 @@ using UnityEngine;
 public class UnitsBuyer : MonoBehaviour
 {
     [SerializeField] private int _unitPrice;
-    [SerializeField] private SheltersStorage _sheltersStorage;
-    [SerializeField] private FlagsStorage _flagStorage;
+    [SerializeField] private FlagStorage _flagStorage;
     [SerializeField] private Wallet _wallet;
-
-    public event Action<int> UnitSpawned;
+    [SerializeField] private UnitSpawner _spawner;
 
     private void OnEnable()
     {
@@ -22,14 +20,12 @@ public class UnitsBuyer : MonoBehaviour
 
     private void TryBuyUnit()
     {
-        if (_flagStorage.Flags.Count == 0 && _wallet.ResourceCount >= _unitPrice)
+        if (_flagStorage._flag == null
+            && _spawner.GetSpawnPointsCount > 0
+            && _wallet.ResourceCount >= _unitPrice)
         {
-            if (_sheltersStorage.TryChooseShelter(out Shelter shelter))
-            {
-                shelter.SpawnUnit();
-
-                UnitSpawned?.Invoke(_unitPrice);
-            }
+            _spawner.SpawnUnit();
+            _wallet.DecreaseResources(_unitPrice);
         }
     }
 }

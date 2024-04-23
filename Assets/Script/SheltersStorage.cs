@@ -18,7 +18,7 @@ public class SheltersStorage : MonoBehaviour
 
     public bool TryChooseShelter(out Shelter shelter)
     {
-        shelter = _shelters.FirstOrDefault(shelter => shelter.UnitSpawner.SpawnPoints.Count() > 0);
+        shelter = _shelters.FirstOrDefault(shelter => shelter.UnitSpawner.GetSpawnPointsCount > 0);
 
         return shelter != null;
     }

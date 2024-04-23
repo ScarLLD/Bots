@@ -3,7 +3,10 @@ using UnityEngine;
 public class Shelter : MonoBehaviour
 {
     [SerializeField] private UnitSpawner _unitSpawner;
+    [SerializeField] private FlagSetter _flagSetter;
     [SerializeField] private Employer _employer;
+    [SerializeField] private Canvas _canvas;
+    [SerializeField] private Wallet _wallet;
 
     private ResourceSpawner _resourceSpawner;
     private SheltersSpawner _sheltersSpawner;
@@ -14,29 +17,32 @@ public class Shelter : MonoBehaviour
 
     private void OnEnable()
     {
-        _employer.ResourceDelivered += TransferResource;
         _employer.UnitCameFlag += SendBuildRequest;
     }
 
     private void OnDisable()
     {
-        _employer.ResourceDelivered -= TransferResource;
         _employer.UnitCameFlag -= SendBuildRequest;
+    }
 
+    public void TakeGold(Resource resource)
+    {
+        _resourceSpawner.TakeResource(resource);
+        _wallet.IncreaseResource();
     }
 
     public void Init(ResourceSpawner resourceSpawner, ResourcesStorage resourcesStorage,
-        SheltersBuyer sheltersBuyer, SheltersSpawner sheltersSpawner)
+        SheltersSpawner sheltersSpawner, Camera camera)
     {
         _resourceSpawner = resourceSpawner;
         _sheltersSpawner = sheltersSpawner;
 
-        _employer.Init(resourcesStorage, sheltersBuyer);
-    }
+        _canvas.renderMode = RenderMode.ScreenSpaceCamera;
+        _canvas.worldCamera = camera;
+        _canvas.renderMode = RenderMode.WorldSpace;
 
-    private void TransferResource(Resource resource)
-    {
-        _resourceSpawner.CollectResource(resource);
+        _employer.Init(resourcesStorage);
+        _flagSetter.Init(camera);
     }
 
     private void SendBuildRequest(Unit unit, Flag flag)
@@ -44,20 +50,8 @@ public class Shelter : MonoBehaviour
         _sheltersSpawner.BuildShelter(unit, flag);
     }
 
-    public void GiveBuildTask(Flag flag)
-    {
-        _employer.TakeFlag(flag);
-
-        Flag = flag;
-    }
-
     public void TakeUnit(Unit unit)
     {
         _unitSpawner.TakeUnit(unit);
-    }
-
-    public void SpawnUnit()
-    {
-        _unitSpawner.SpawnUnit();
     }
 }

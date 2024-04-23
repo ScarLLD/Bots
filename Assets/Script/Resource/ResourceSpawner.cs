@@ -37,7 +37,7 @@ public class ResourceSpawner : MonoBehaviour
         StartCoroutine(Generate());
     }
 
-    public void CollectResource(Resource resource)
+    public void TakeResource(Resource resource)
     {
         _resourcePool.PutResource(resource);
         SpawnParticle(resource.transform.position);
@@ -59,9 +59,9 @@ public class ResourceSpawner : MonoBehaviour
         {
             List<Transform> _tempSpawnPoints = _spawnPoints.ToList();
 
-            int TrySpawnCount = Random.Range(1, _spawnPoints.Count);
+            int spawnAttemptsCount = Random.Range(1, _spawnPoints.Count);
 
-            for (int i = 0; i < TrySpawnCount; i++)
+            for (int i = 0; i < spawnAttemptsCount; i++)
             {
                 int index = Random.Range(0, _tempSpawnPoints.Count - 1);
                 Transform spawnPoint = _tempSpawnPoints[index];

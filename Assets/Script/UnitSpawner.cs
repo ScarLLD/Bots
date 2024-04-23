@@ -7,34 +7,39 @@ public class UnitSpawner : MonoBehaviour
     [SerializeField] private int _speed;
     [SerializeField] private Transform _spawnPointsParent;
     [SerializeField] private Unit _unitPrefab;
+    [SerializeField] private Shelter _shelter;
+    [SerializeField] private Employer _employer;
 
-    private Employer _employer;
+    private Queue<Transform> _spawnPoints;
 
-    public Queue<Transform> SpawnPoints { get; private set; }
+    public int GetSpawnPointsCount => _spawnPoints.Count;
 
     private void Awake()
     {
-        _employer = GetComponent<Employer>();
-
-        SpawnPoints = new Queue<Transform>();
+        _spawnPoints = new Queue<Transform>();
 
         for (int i = 0; i < _spawnPointsParent.childCount; i++)
         {
-            SpawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
+            _spawnPoints.Enqueue(_spawnPointsParent.GetChild(i));
         }
+    }
+
+    private void Start()
+    {
+        SpawnUnit();
     }
 
     public void TakeSpawnPoint(Transform spawnPoint)
     {
-        SpawnPoints.Enqueue(spawnPoint);
+        _spawnPoints.Enqueue(spawnPoint);
     }
 
     public void SpawnUnit()
     {
-        Transform tempTransform = SpawnPoints.Dequeue();
+        Transform tempTransform = _spawnPoints.Dequeue();
 
         Unit unit = Instantiate(_unitPrefab, tempTransform.position, Quaternion.identity, transform);
-        unit.Init(tempTransform, _employer, _speed);
+        unit.Init(tempTransform, _shelter, _speed);
 
         _employer.TakeUnit(unit);
     }
@@ -44,6 +49,6 @@ public class UnitSpawner : MonoBehaviour
         _employer.TakeUnit(unit);
 
         unit.transform.parent = transform;
-        unit.ChangeBase(SpawnPoints.Dequeue());
+        unit.ChangeBase(_spawnPoints.Dequeue());
     }
 }

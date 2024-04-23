@@ -5,11 +5,8 @@ public class SheltersBuyer : MonoBehaviour
 {
     [SerializeField] private int _shelterPrice;
     [SerializeField] private SheltersSpawner _sheltersSpawner;
-    [SerializeField] private FlagsStorage _flagsStorage;
+    [SerializeField] private FlagStorage _flagsStorage;
     [SerializeField] private Wallet _wallet;
-
-    public event Action<int> ShelterSpawned;
-
 
     private void OnEnable()
     {
@@ -23,11 +20,11 @@ public class SheltersBuyer : MonoBehaviour
 
     public bool TryConfirmBuyPossibility()
     {
-        return _wallet.ResourceCount - _shelterPrice * _flagsStorage.Flags.Count >= 0;
+        return _wallet.ResourceCount - _shelterPrice >= 0;
     }
 
     private void BuyShelter()
     {
-        ShelterSpawned?.Invoke(_shelterPrice);
+        _wallet.DecreaseResources(_shelterPrice);
     }
 }

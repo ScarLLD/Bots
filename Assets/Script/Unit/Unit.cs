@@ -4,10 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(UnitMover), typeof(UnitTaker))]
 public class Unit : MonoBehaviour
 {
-    private Employer _employer;
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
-
+    private Shelter _shelter;
     public Transform StartTransform => _unitMover.StartTransfrom;
     public bool IsBusy { get; private set; }
 
@@ -16,7 +15,6 @@ public class Unit : MonoBehaviour
         _unitMover.Arrived += _unitTaker.Interact;
         _unitTaker.ResourceTaken += _unitMover.MoveBack;
         _unitTaker.ResourceDelivered += ConfirmDelivery;
-        _unitTaker.CameFlag += NotifyEmployer;
     }
 
     private void OnDisable()
@@ -24,7 +22,6 @@ public class Unit : MonoBehaviour
         _unitMover.Arrived -= _unitTaker.Interact;
         _unitTaker.ResourceTaken -= _unitMover.MoveBack;
         _unitTaker.ResourceDelivered -= ConfirmDelivery;
-        _unitTaker.CameFlag -= NotifyEmployer;
     }
 
     private void Awake()
@@ -32,15 +29,14 @@ public class Unit : MonoBehaviour
         _unitMover = GetComponent<UnitMover>();
         _unitTaker = GetComponent<UnitTaker>();
 
-        
+
 
         IsBusy = false;
     }
 
-    public void Init(Transform tempTransform, Employer employer, int speed)
+    public void Init(Transform tempTransform, Shelter shelter, int speed)
     {
-        _employer = employer;
-
+        _shelter = shelter;
         _unitMover.Init(speed);
         _unitMover.ChangeStartPosition(tempTransform);
     }
@@ -60,9 +56,9 @@ public class Unit : MonoBehaviour
         IsBusy = true;
     }
 
-    public void ConfirmDelivery(Resource gold)
+    public void ConfirmDelivery(Resource resource)
     {
-        _employer.ConfirmDelivery(gold);
+        _shelter.TakeGold(resource);
 
         IsBusy = false;
     }
@@ -72,10 +68,5 @@ public class Unit : MonoBehaviour
         _unitMover.ChangeStartPosition(tempTransfrom);
 
         IsBusy = false;
-    }
-
-    private void NotifyEmployer(Flag flag)
-    {
-        _employer.NotifyShelter(this, flag);
     }
 }

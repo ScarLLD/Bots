@@ -3,55 +3,46 @@ using System.Collections;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(SheltersSpawner))]
 public class FlagSetter : MonoBehaviour
 {
+    [SerializeField] private ShelterButtonTracker _shelterButtonTracker;
+    [SerializeField] private FlagStorage _flagStorage;
     [SerializeField] private Flag _flagPrefab;
-    [SerializeField] private Camera _camera;
     [SerializeField] private int _rayDirection;
     [SerializeField] private LayerMask _hitLayer;
 
+    private Camera _camera;
     private Collider[] _colliders;
     private Ray _ray;
     private bool _isWork;
 
-    public event Action<Flag> FlagInstalled;
-
-    private void Update()
+    private void OnEnable()
     {
-        _ray = _camera.ScreenPointToRay(Input.mousePosition);
-
-        if (_isWork == false && Physics.Raycast(_ray, out RaycastHit _hit))
-            if (Input.GetMouseButtonDown(0)
-                && _hit.transform.gameObject.TryGetComponent(out Shelter shelter))
-                if (shelter.UnitsCount > 1)
-                    StartCoroutine(ShowTemplate(shelter));
+        _shelterButtonTracker.ButtonClicked += ShowFlag;
     }
 
-    private void SetFlag(Shelter shelter, Flag flag)
+    private void OnDisable()
     {
-        if (shelter.Flag != null)
-        {
-            shelter.Flag.transform.position = flag.transform.position;
-        }
-        else
-        {
-            Flag tempFlag = Instantiate(_flagPrefab, flag.transform.position,
-                flag.transform.rotation, transform);
-
-            FlagInstalled?.Invoke(tempFlag);
-
-            shelter.GiveBuildTask(tempFlag);
-        }
+        _shelterButtonTracker.ButtonClicked -= ShowFlag;
     }
 
-    private IEnumerator ShowTemplate(Shelter shelter)
+    public void Init(Camera camera)
+    {
+        _camera = camera;
+    }
+
+    private void ShowFlag()
+    {
+        StartCoroutine(ShowTemplate());
+    }
+
+    private IEnumerator ShowTemplate()
     {
         _isWork = true;
 
         Vector3 positionMultiple = _flagPrefab.transform.position;
 
-        Flag flag = Instantiate(_flagPrefab, transform);
+        Flag flag = Instantiate(_flagPrefab, _flagStorage.transform);
 
         BoxCollider flagCollider = flag.GetComponent<BoxCollider>();
 
@@ -59,6 +50,10 @@ public class FlagSetter : MonoBehaviour
 
         while (_isWork)
         {
+            Debug.Log("Ray");
+
+            _ray = _camera.ScreenPointToRay(Input.mousePosition);
+
             if (Physics.Raycast(_ray, out RaycastHit hit, _rayDirection, _hitLayer))
             {
                 flag.transform.position = new Vector3(hit.point.x,
@@ -77,7 +72,7 @@ public class FlagSetter : MonoBehaviour
                 {
                     flagCollider.enabled = true;
 
-                    SetFlag(shelter, flag);
+                    _flagStorage.PutUpFlag(flag);
 
                     _isWork = false;
                 }
