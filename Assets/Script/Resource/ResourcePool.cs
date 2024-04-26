@@ -5,28 +5,33 @@ public class ResourcePool : MonoBehaviour
 {
     [SerializeField] private Transform _container;
     [SerializeField] private Resource _resourcePrefab;
+    [SerializeField] private ParticlePool _particlePool;
 
-    public Queue<Resource> Pool { get; private set; }
+    private Queue<Resource> _pool;
 
     private void Awake()
     {
-        Pool = new Queue<Resource>();
+        _pool = new Queue<Resource>();
     }
 
     public Resource GetResource()
     {
-        if (Pool.Count == 0)
+        if (_pool.Count == 0)
         {
-            return Instantiate(_resourcePrefab, transform.position, transform.rotation, _container);            
+            return Instantiate(_resourcePrefab, transform.position, transform.rotation, _container);
         }
 
-        return Pool.Dequeue();
+        return _pool.Dequeue();
     }
 
     public void PutResource(Resource resource)
     {
         resource.gameObject.SetActive(false);
         resource.transform.parent = _container;
-        Pool.Enqueue(resource);
+        _pool.Enqueue(resource);
+
+        ParticleSystem particle = _particlePool.GetParticle();
+        particle.transform.position = resource.transform.position;
+        particle.gameObject.SetActive(true);
     }
 }

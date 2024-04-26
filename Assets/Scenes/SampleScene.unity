@@ -195,7 +195,6 @@ GameObject:
   m_Component:
   - component: {fileID: 240901792}
   - component: {fileID: 240901791}
-  - component: {fileID: 240901793}
   m_Layer: 0
   m_Name: Spawner
   m_TagString: Untagged
@@ -218,10 +217,10 @@ MonoBehaviour:
   _timeBetwenSpawn: 5
   _resourceStorage: {fileID: 271030308}
   _spawnPointsParent: {fileID: 1194046697}
-  _particlePool: {fileID: 1261069745}
   _resourceLayer:
     serializedVersion: 2
     m_Bits: 64
+  _resourcePool: {fileID: 2048186191}
 --- !u!4 &240901792
 Transform:
   m_ObjectHideFlags: 0
@@ -238,24 +237,11 @@ Transform:
   - {fileID: 1194046697}
   - {fileID: 2048186190}
   - {fileID: 1261069746}
+  - {fileID: 598724148}
   - {fileID: 667745901}
   - {fileID: 894497333}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &240901793
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 240901790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47d7e3945a7523044a9df612d97fb883, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _container: {fileID: 667745901}
-  _resourcePrefab: {fileID: 4235115631740479259, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
 --- !u!1 &271030304
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,12 +288,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63a8cb6c268334f4ba19ff0ffe2f85f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _particleRotation: {x: -90, y: 0, z: 0}
-  _firstBasePosition: {x: 0, y: 0, z: 0}
-  _resourceSpawner: {fileID: 240901791}
   _resourcesStorage: {fileID: 271030308}
-  _flagStorage: {fileID: 0}
-  _particleShelterPrefab: {fileID: 8594713877718351816, guid: 345939e2ed2ebe149b1b2b1b628cd026, type: 3}
+  _resourcePool: {fileID: 2048186191}
+  _particlePool: {fileID: 598724149}
   _shelterPrefab: {fileID: 6898050350039553528, guid: cadaab0216d81ef4e8a08e3765a7a87e, type: 3}
   _sheltersStorage: {fileID: 271030310}
   _camera: {fileID: 963194227}
@@ -335,6 +318,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3840a55691c8aec43b128948eca4f2e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &598724147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 598724148}
+  - component: {fileID: 598724149}
+  m_Layer: 0
+  m_Name: SheltersParticlePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &598724148
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598724147}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 240901792}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &598724149
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598724147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bcb7b8461980a04fb31a96380498d01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _container: {fileID: 894497333}
+  _particlePrefab: {fileID: 8594713877718351816, guid: 345939e2ed2ebe149b1b2b1b628cd026, type: 3}
+  _rotation: {x: -90, y: 0, z: 0}
 --- !u!1 &667745900
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +390,7 @@ Transform:
   m_GameObject: {fileID: 667745900}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.9765625, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -547,7 +577,7 @@ Transform:
   m_GameObject: {fileID: 894497332}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.9765625, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -864,7 +894,7 @@ GameObject:
   - component: {fileID: 1261069746}
   - component: {fileID: 1261069745}
   m_Layer: 0
-  m_Name: ParticlePool
+  m_Name: ResourcesParticlePool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1343,7 +1373,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _container: {fileID: 667745901}
-  _resourcePrefab: {fileID: 0}
+  _resourcePrefab: {fileID: 4235115631740479259, guid: 92ff809fda09d8d428fb3bc2c38e8e34, type: 3}
+  _particlePool: {fileID: 1261069745}
 --- !u!1 &2143122066
 GameObject:
   m_ObjectHideFlags: 0

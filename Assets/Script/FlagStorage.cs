@@ -6,7 +6,6 @@ public class FlagStorage : MonoBehaviour
 
     public void RemoveFlag()
     {
-        Destroy(_flag.gameObject);
         _flag = null;
     }
 
@@ -18,5 +17,15 @@ public class FlagStorage : MonoBehaviour
         }
 
         _flag.transform.position = flag.transform.position;
+    }
+
+    public bool TryGetFlag(out Flag flag)
+    {
+        flag = null;
+
+        if (_flag != null)
+            flag = _flag;
+
+        return flag != null;
     }
 }

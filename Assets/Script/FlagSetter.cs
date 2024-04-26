@@ -1,16 +1,18 @@
-using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 
 public class FlagSetter : MonoBehaviour
 {
-    [SerializeField] private ShelterButtonTracker _shelterButtonTracker;
+    [SerializeField] private int _minUnitsCount;
+    [SerializeField] private UnitsStorage _unitsStorage;
     [SerializeField] private FlagStorage _flagStorage;
+    [SerializeField] private ShelterButtonTracker _shelterButtonTracker;
     [SerializeField] private Flag _flagPrefab;
     [SerializeField] private int _rayDirection;
     [SerializeField] private LayerMask _hitLayer;
 
+    private Coroutine _coroutine;
     private Camera _camera;
     private Collider[] _colliders;
     private Ray _ray;
@@ -33,7 +35,8 @@ public class FlagSetter : MonoBehaviour
 
     private void ShowFlag()
     {
-        StartCoroutine(ShowTemplate());
+        if (_unitsStorage.UnitsCount > _minUnitsCount && _coroutine == null)
+            StartCoroutine(ShowTemplate());
     }
 
     private IEnumerator ShowTemplate()
@@ -50,8 +53,6 @@ public class FlagSetter : MonoBehaviour
 
         while (_isWork)
         {
-            Debug.Log("Ray");
-
             _ray = _camera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(_ray, out RaycastHit hit, _rayDirection, _hitLayer))

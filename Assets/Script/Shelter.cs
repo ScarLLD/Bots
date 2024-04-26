@@ -1,57 +1,59 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Wallet))]
 public class Shelter : MonoBehaviour
 {
-    [SerializeField] private UnitSpawner _unitSpawner;
+    [SerializeField] private FlagStorage _flagStorage;
     [SerializeField] private FlagSetter _flagSetter;
+    [SerializeField] private UnitsStorage _unitsStorage;
+    [SerializeField] private UnitSpawner _unitSpawner;
     [SerializeField] private Employer _employer;
     [SerializeField] private Canvas _canvas;
-    [SerializeField] private Wallet _wallet;
 
-    private ResourceSpawner _resourceSpawner;
+    private Wallet _wallet;
+    private ResourcePool _resourcePool;
     private SheltersSpawner _sheltersSpawner;
 
-    public Flag Flag { get; private set; }
-    public UnitSpawner UnitSpawner => _unitSpawner;
-    public int UnitsCount => _employer.UnitsCount;
-
-    private void OnEnable()
+    private void Awake()
     {
-        _employer.UnitCameFlag += SendBuildRequest;
+        _wallet = GetComponent<Wallet>();
     }
 
-    private void OnDisable()
+    public void Init(ResourcesStorage resourcesStorage, ResourcePool resourcePool,
+        SheltersSpawner sheltersSpawner, Camera camera)
     {
-        _employer.UnitCameFlag -= SendBuildRequest;
+        _resourcePool = resourcePool;
+        _sheltersSpawner = sheltersSpawner;
+
+        _employer.Init(resourcesStorage);
+        _flagSetter.Init(camera);
+
+        NormalizeCanvas(camera);
     }
 
     public void TakeGold(Resource resource)
     {
-        _resourceSpawner.TakeResource(resource);
+        _resourcePool.PutResource(resource);
         _wallet.IncreaseResource();
     }
 
-    public void Init(ResourceSpawner resourceSpawner, ResourcesStorage resourcesStorage,
-        SheltersSpawner sheltersSpawner, Camera camera)
-    {
-        _resourceSpawner = resourceSpawner;
-        _sheltersSpawner = sheltersSpawner;
-
-        _canvas.renderMode = RenderMode.ScreenSpaceCamera;
-        _canvas.worldCamera = camera;
-        _canvas.renderMode = RenderMode.WorldSpace;
-
-        _employer.Init(resourcesStorage);
-        _flagSetter.Init(camera);
-    }
-
-    private void SendBuildRequest(Unit unit, Flag flag)
+    public void SendBuildRequest(Unit unit, Flag flag)
     {
         _sheltersSpawner.BuildShelter(unit, flag);
+        _flagStorage.RemoveFlag();
+        Destroy(flag);
     }
 
     public void TakeUnit(Unit unit)
     {
-        _unitSpawner.TakeUnit(unit);
+        unit.Init(_unitSpawner.GetSpawnPoint, this);
+        _unitsStorage.TakeUnit(unit);
+    }
+
+    private void NormalizeCanvas(Camera camera)
+    {
+        _canvas.worldCamera = camera;
+        _canvas.renderMode = RenderMode.WorldSpace;
+        _canvas.transform.position = transform.position;
     }
 }

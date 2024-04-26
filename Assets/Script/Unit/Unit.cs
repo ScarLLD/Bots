@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(UnitMover), typeof(UnitTaker))]
@@ -7,20 +6,23 @@ public class Unit : MonoBehaviour
     private UnitMover _unitMover;
     private UnitTaker _unitTaker;
     private Shelter _shelter;
-    public Transform StartTransform => _unitMover.StartTransfrom;
+
+    public Transform StartTransform { get; private set; }
     public bool IsBusy { get; private set; }
 
     private void OnEnable()
     {
+        _unitTaker.CameFlag += SendNotify;
         _unitMover.Arrived += _unitTaker.Interact;
-        _unitTaker.ResourceTaken += _unitMover.MoveBack;
+        _unitTaker.ResourceTaken += MoveBack;
         _unitTaker.ResourceDelivered += ConfirmDelivery;
     }
 
     private void OnDisable()
     {
+        _unitTaker.CameFlag -= SendNotify;
         _unitMover.Arrived -= _unitTaker.Interact;
-        _unitTaker.ResourceTaken -= _unitMover.MoveBack;
+        _unitTaker.ResourceTaken -= MoveBack;
         _unitTaker.ResourceDelivered -= ConfirmDelivery;
     }
 
@@ -29,16 +31,13 @@ public class Unit : MonoBehaviour
         _unitMover = GetComponent<UnitMover>();
         _unitTaker = GetComponent<UnitTaker>();
 
-
-
         IsBusy = false;
     }
 
-    public void Init(Transform tempTransform, Shelter shelter, int speed)
+    public void Init(Transform startTransform, Shelter shelter)
     {
+        StartTransform = startTransform;
         _shelter = shelter;
-        _unitMover.Init(speed);
-        _unitMover.ChangeStartPosition(tempTransform);
     }
 
     public void StartGrub(Resource resource)
@@ -63,10 +62,15 @@ public class Unit : MonoBehaviour
         IsBusy = false;
     }
 
-    public void ChangeBase(Transform tempTransfrom)
+    public void SendNotify(Flag flag)
     {
-        _unitMover.ChangeStartPosition(tempTransfrom);
+        _shelter.SendBuildRequest(this, flag);
 
         IsBusy = false;
+    }
+
+    public void MoveBack()
+    {
+        _unitMover.MoveToPoint(StartTransform);
     }
 }

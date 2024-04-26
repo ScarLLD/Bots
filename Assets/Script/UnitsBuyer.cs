@@ -1,12 +1,11 @@
-using System;
 using UnityEngine;
 
 public class UnitsBuyer : MonoBehaviour
 {
     [SerializeField] private int _unitPrice;
     [SerializeField] private FlagStorage _flagStorage;
-    [SerializeField] private Wallet _wallet;
     [SerializeField] private UnitSpawner _spawner;
+    [SerializeField] private Wallet _wallet;
 
     private void OnEnable()
     {
@@ -20,7 +19,7 @@ public class UnitsBuyer : MonoBehaviour
 
     private void TryBuyUnit()
     {
-        if (_flagStorage._flag == null
+        if (_flagStorage.TryGetFlag(out Flag flag) == false
             && _spawner.GetSpawnPointsCount > 0
             && _wallet.ResourceCount >= _unitPrice)
         {

@@ -1,29 +1,21 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-[RequireComponent(typeof(ResourcePool))]
 public class ResourceSpawner : MonoBehaviour
 {
     [SerializeField] private float _timeBetwenSpawn;
     [SerializeField] private ResourcesStorage _resourceStorage;
     [SerializeField] private Transform _spawnPointsParent;
-    [SerializeField] private ParticlePool _particlePool;
     [SerializeField] private LayerMask _resourceLayer;
+    [SerializeField] private ResourcePool _resourcePool;
 
-    private ResourcePool _resourcePool;
     private WaitForSeconds _wait;
     private List<Transform> _spawnPoints;
 
-    public event Action ResourceCollected;
-
     private void Awake()
     {
-        _resourcePool = GetComponent<ResourcePool>();
-
         _spawnPoints = new List<Transform>();
         _wait = new WaitForSeconds(_timeBetwenSpawn);
 
@@ -35,22 +27,6 @@ public class ResourceSpawner : MonoBehaviour
     private void Start()
     {
         StartCoroutine(Generate());
-    }
-
-    public void TakeResource(Resource resource)
-    {
-        _resourcePool.PutResource(resource);
-        SpawnParticle(resource.transform.position);
-
-        ResourceCollected?.Invoke();
-    }
-
-    private void SpawnParticle(Vector3 spawnPosition)
-    {
-        ParticleSystem particle = _particlePool.GetParticle();
-
-        particle.transform.position = spawnPosition;
-        particle.gameObject.SetActive(true);
     }
 
     private IEnumerator Generate()

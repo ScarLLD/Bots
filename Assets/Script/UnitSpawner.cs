@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Employer))]
 public class UnitSpawner : MonoBehaviour
 {
     [SerializeField] private int _speed;
@@ -9,10 +8,21 @@ public class UnitSpawner : MonoBehaviour
     [SerializeField] private Unit _unitPrefab;
     [SerializeField] private Shelter _shelter;
     [SerializeField] private Employer _employer;
+    [SerializeField] private UnitsStorage _unitsStorage;
 
     private Queue<Transform> _spawnPoints;
 
+    public Transform GetSpawnPoint => _spawnPoints.Dequeue();
     public int GetSpawnPointsCount => _spawnPoints.Count;
+
+    private void OnEnable()
+    {
+        _employer.UnitCameFlag += TakeSpawnPoint;
+    }
+    private void OnDisable()
+    {
+        _employer.UnitCameFlag -= TakeSpawnPoint;
+    }
 
     private void Awake()
     {
@@ -29,26 +39,18 @@ public class UnitSpawner : MonoBehaviour
         SpawnUnit();
     }
 
-    public void TakeSpawnPoint(Transform spawnPoint)
+    public void TakeSpawnPoint(Unit unit)
     {
-        _spawnPoints.Enqueue(spawnPoint);
+        _spawnPoints.Enqueue(unit.StartTransform);
     }
 
     public void SpawnUnit()
     {
-        Transform tempTransform = _spawnPoints.Dequeue();
+        Transform startTransforn = _spawnPoints.Dequeue();
 
-        Unit unit = Instantiate(_unitPrefab, tempTransform.position, Quaternion.identity, transform);
-        unit.Init(tempTransform, _shelter, _speed);
+        Unit unit = Instantiate(_unitPrefab, startTransforn.position, Quaternion.identity, transform);
+        unit.Init(startTransforn, _shelter);
 
-        _employer.TakeUnit(unit);
-    }
-
-    public void TakeUnit(Unit unit)
-    {
-        _employer.TakeUnit(unit);
-
-        unit.transform.parent = transform;
-        unit.ChangeBase(_spawnPoints.Dequeue());
+        _unitsStorage.TakeUnit(unit);
     }
 }

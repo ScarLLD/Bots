@@ -47,6 +47,7 @@ public class UnitTaker : MonoBehaviour
     {
         CameFlag?.Invoke(TempFlag);
 
+        Destroy(TempFlag.gameObject);
         TempFlag = null;
     }
 
@@ -65,11 +66,10 @@ public class UnitTaker : MonoBehaviour
 
     public void PutGold()
     {
-        TempShelter = null;
-        _targetResource = null;
-
         ResourceDelivered?.Invoke(TempResource);
 
+        _targetResource = null;
+        TempShelter = null;
         TempResource = null;
     }
 
